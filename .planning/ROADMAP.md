@@ -16,19 +16,19 @@
 Plans:
 **Wave 1**
 
-- [ ] 01-01-PLAN.md — Next.js 15 scaffold, Prisma User model, dark theme, env validation
+- [x] 01-01-PLAN.md — Next.js 15 scaffold, Prisma User model, dark theme, env validation *(completed 2026-05-22)*
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 01-02-PLAN.md — Auth vertical slice: signup, login, logout, session persistence, route protection
+- [x] 01-02-PLAN.md — Auth vertical slice: signup, login, logout, session persistence, route protection *(completed 2026-05-22)*
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 01-03-PLAN.md — Password reset flow: request, token, confirm, new password
+- [x] 01-03-PLAN.md — Password reset flow: request, token, confirm, new password *(completed 2026-05-22)*
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
-- [ ] 01-04-PLAN.md — Security hardening (git-secrets), auth unit tests, README + architecture docs
+- [x] 01-04-PLAN.md — Security hardening (git-secrets), auth unit tests, README + architecture docs *(completed 2026-05-22)*
 
 **Success Criteria:**
 
