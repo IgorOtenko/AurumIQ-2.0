@@ -37,8 +37,14 @@ yarn-error.log*
 .env.test.local
 .env.production.local
 
+# keys and certificates
+*.key
+
 # vercel
 .vercel
+
+# turbo
+.turbo
 
 # typescript
 *.tsbuildinfo
