@@ -24,3 +24,18 @@ model User {
 
   @@map("users")
 }
+
+/// Token-based password reset flow (AUTH-04).
+/// Tokens are single-use (usedAt tracks consumption) and expire after 1 hour.
+/// Old unused tokens for the same email are cleaned up on each new request
+/// to prevent token accumulation.
+model PasswordResetToken {
+  id        String    @id @default(uuid())
+  token     String    @unique
+  email     String
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@map("password_reset_tokens")
+}
