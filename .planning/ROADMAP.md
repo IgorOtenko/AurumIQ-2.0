@@ -11,6 +11,12 @@
 **Goal:** Scaffold the full-stack project with security-hardened infrastructure, user authentication, and a deployable dark-themed shell.
 **Mode:** mvp
 **Requirements:** AUTH-01, AUTH-02, AUTH-03, AUTH-04, INFRA-01, INFRA-03
+**Plans:** 4 plans
+Plans:
+- [ ] 01-01-PLAN.md — Next.js 15 scaffold, Prisma User model, dark theme, env validation
+- [ ] 01-02-PLAN.md — Auth vertical slice: signup, login, logout, session persistence, route protection
+- [ ] 01-03-PLAN.md — Password reset flow: request, token, confirm, new password
+- [ ] 01-04-PLAN.md — Security hardening (git-secrets), auth unit tests, README + architecture docs
 **Success Criteria:**
 1. A new user can sign up with email and password, log in, and have their session persist after a browser refresh.
 2. A logged-in user can log out from any page and is redirected to the login screen.
@@ -167,7 +173,7 @@ All phases are strictly sequential. No phase can begin until its predecessor is 
 | INFRA-03 | Phase 1 |
 | INFRA-04 | Phase 2 |
 
-**Coverage:** 33/33 v1 requirements mapped ✓
+**Coverage:** 33/33 v1 requirements mapped
 
 ---
 *Roadmap created: 2026-05-07*
