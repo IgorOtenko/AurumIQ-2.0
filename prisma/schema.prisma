@@ -1,0 +1,26 @@
+// Prisma schema for AurumIQ
+// Defines the data model for the financial analysis platform.
+// PostgreSQL is used for relational queries across portfolio holdings,
+// analysis history, and user management.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// Core user account for authentication and portfolio ownership.
+/// bcryptjs handles password hashing at the application layer.
+model User {
+  id             String   @id @default(uuid())
+  email          String   @unique
+  hashedPassword String
+  name           String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@map("users")
+}
