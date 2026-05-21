@@ -159,6 +159,25 @@ Architecture not yet mapped. Follow existing patterns found in the codebase.
 No project skills found. Add skills to any of: `.claude/skills/`, `.agents/skills/`, `.cursor/skills/`, `.github/skills/`, or `.codex/skills/` with a `SKILL.md` index file.
 <!-- GSD:skills-end -->
 
+## Presentation-Grade Documentation
+
+This project will be presented. Every session must:
+- **Commit messages**: Descriptive, conventional-commit style — they tell the project story
+- **GSD artifacts**: Keep STATE.md, ROADMAP.md, and phase plans current after every meaningful change
+- **Code comments**: Explain _why_, not _what_ — especially for architectural decisions and non-obvious tradeoffs
+- **Decision log**: Record key decisions in PROJECT.md's Key Decisions table with rationale
+- **Session handoffs**: Use `/gsd-pause-work` at session end to create explicit context documents
+- **PR descriptions**: Detailed summaries when shipping phases — these become presentation material
+- **Architecture docs**: Update as the system evolves — diagrams, data flows, component responsibilities
+
+Do NOT skip documentation steps to save time. The documentation IS the deliverable alongside the code.
+
+## Skill-First Protocol
+
+**MANDATORY:** Before starting ANY task, scan `.claude/skill-registry.md` for matching skills. Invoke matched skill(s) via the Skill tool before doing any work. If no skill matches, brainstorm whether to execute directly or create a new skill via `skill-creator:skill-creator` (and add it to the registry). This rule is non-negotiable and applies to every task regardless of size.
+
+Registry location: `.claude/skill-registry.md`
+
 <!-- GSD:workflow-start source:GSD defaults -->
 ## GSD Workflow Enforcement
 
