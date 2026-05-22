@@ -172,11 +172,31 @@ This project will be presented. Every session must:
 
 Do NOT skip documentation steps to save time. The documentation IS the deliverable alongside the code.
 
+## Session Management
+
+When context usage approaches ~70-75%, proactively tell the user:
+1. Where we are (what was completed, what's next)
+2. Whether `/clear` or a **new session** is better for the next step:
+   - **`/clear`**: same process, wipes conversation but keeps connection. Better for quick continuation of simple tasks.
+   - **New session**: full fresh context + claude-mem injects compressed summaries from all prior sessions. Better before heavy agent work (planning, execution, research) or when context is loaded with read artifacts.
+3. The exact command to run next
+
+Never let context silently run out. Always give the user a clean handoff.
+
 ## Skill-First Protocol
 
 **MANDATORY:** Before starting ANY task, scan `.claude/skill-registry.md` for matching skills. Invoke matched skill(s) via the Skill tool before doing any work. If no skill matches, brainstorm whether to execute directly or create a new skill via `skill-creator:skill-creator` (and add it to the registry). This rule is non-negotiable and applies to every task regardless of size.
 
 Registry location: `.claude/skill-registry.md`
+
+## Enhanced Agent Prompts
+
+When spawning ANY subagent, inject into its prompt:
+
+1. **Project rules** — Presentation-Grade Documentation standards and key constraints from this file
+2. **Relevant skills** — if the task matches a skill in the registry, include that skill's guidance
+3. **Locked decisions** — KEY Decisions from PROJECT.md and prior CONTEXT.md decisions relevant to the task
+4. **Tech stack** — always remind agents of the locked stack (Next.js 15, React 19, Prisma, NextAuth v5, Tailwind v4, shadcn/ui)
 
 <!-- GSD:workflow-start source:GSD defaults -->
 ## GSD Workflow Enforcement
@@ -192,6 +212,10 @@ Do not make direct repo edits outside a GSD workflow unless the user explicitly 
 <!-- GSD:workflow-end -->
 
 
+
+## UI Verification
+
+Always use Chrome browser automation (mcp__claude-in-chrome__* tools) for UI verifications and visual testing. Never skip browser-based checks when verifying frontend changes — load the page, interact with it, and confirm visually. This applies to all sessions.
 
 <!-- GSD:profile-start -->
 ## Developer Profile
