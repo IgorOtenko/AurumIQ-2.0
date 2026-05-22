@@ -45,6 +45,16 @@ Plans:
 **Goal:** Build validated, cached financial data adapters so every downstream feature reads from a reliable, tested data store rather than raw external APIs.
 **Mode:** mvp
 **Requirements:** INFRA-04
+**Plans:** 2 plans
+Plans:
+**Wave 1**
+
+- [ ] 02-01-PLAN.md — End-to-end vertical slice: Prisma RawData model, Pino logger, yahoo-finance2 client, JSONB cache, price adapter, API route, tests
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 02-02-PLAN.md — Remaining 5 adapters (earnings, analyst, options, profile, news), full API route wiring, comprehensive test suite (22+ tests)
+
 **Success Criteria:**
 
 1. Fetching data for a given ticker (e.g., AAPL) stores price, earnings estimates, analyst ratings, and news headlines in the raw_data table with a fetched_at timestamp.
