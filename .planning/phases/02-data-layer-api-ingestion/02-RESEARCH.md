@@ -451,22 +451,13 @@ export const CACHE_TTL = {
 | A4 | Pino 10.x (latest) is compatible with the CLAUDE.md spec of "9.x" | Standard Stack | LOW -- major version bump but API is stable; can pin to 9.x if needed |
 | A5 | RDS free tier sleep/wake behavior causes connection timeouts | Pitfall 5 | LOW -- standard behavior, connect_timeout param handles it |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. **Pino version: 9.x vs 10.x?**
-   - What we know: CLAUDE.md specifies 9.x. npm latest is 10.3.1. Pino 10.x released with minimal breaking changes.
-   - What's unclear: Whether user specifically wants 9.x or "latest stable."
-   - Recommendation: Use 10.x (latest) unless user objects. Pin `"pino": "^9"` if strict adherence to CLAUDE.md is required.
+1. **Pino version: 9.x vs 10.x?** — RESOLVED: Pin to `pino@^9` per CLAUDE.md locked stack. Pino 9.x is the documented version; no deviation without explicit user approval.
 
-2. **News data source adequacy?**
-   - What we know: yahoo-finance2 search returns news articles with title, publisher, link. NewsAPI.org offers 100 req/day free.
-   - What's unclear: Whether Yahoo Finance news quality/quantity is sufficient for the Sources section (DASH-06).
-   - Recommendation: Start with yahoo-finance2 search. Add NewsAPI.org adapter later if quality is insufficient.
+2. **News data source adequacy?** — RESOLVED: Start with yahoo-finance2 search module for MVP. News quality assessment deferred to Phase 4 (DASH-06). If insufficient, NewsAPI.org free tier (100 req/day) can be added as a separate adapter in Phase 4 or 8.
 
-3. **ETF / ADR / non-standard ticker handling scope?**
-   - What we know: Success criteria #4 requires tests for "ETF vs stock vs ADR." Yahoo Finance returns different data shapes for each.
-   - What's unclear: Full extent of shape differences across security types.
-   - Recommendation: Build adapters with graceful degradation. Test with AAPL (stock), SPY (ETF), TSM (ADR), BRK.B (special chars).
+3. **ETF / ADR / non-standard ticker handling scope?** — RESOLVED: Build adapters with Zod `.nullable().optional()` for all fields. Test with representative tickers: AAPL (stock), SPY (ETF), TSM (ADR), BRK-B (special chars). Graceful degradation — return partial data with structured Pino warning rather than throwing.
 
 ## Environment Availability
 
