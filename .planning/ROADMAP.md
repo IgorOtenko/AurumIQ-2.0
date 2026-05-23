@@ -64,11 +64,12 @@ Plans:
 
 ---
 
-### Phase 3: Portfolio Management & Dashboard Shell
+### Phase 3: Portfolio Management & Dashboard Shell *(completed 2026-05-23)*
 
 **Goal:** Deliver end-to-end portfolio CRUD, the Stock Ticker Bar, and the dashboard shell so users can navigate to any holding and see section skeletons.
 **Mode:** mvp
 **Requirements:** PORT-01, PORT-02, PORT-03, PORT-04, DASH-01
+**Execution:** Wave 3A foundation (Holding model, packages, QueryProvider) → Wave 3B 5 parallel agents (portfolio CRUD API ×2, StockTickerBar, PortfolioTable + AddHoldingForm, dashboard shell) → Wave 3C orchestrator wired the two top-level pages → user browser-verified.
 **Success Criteria:**
 
 1. A logged-in user can add a stock by ticker symbol and quantity; it appears immediately in their portfolio list with current market value.

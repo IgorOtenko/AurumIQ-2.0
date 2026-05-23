@@ -15,12 +15,13 @@ datasource db {
 /// Core user account for authentication and portfolio ownership.
 /// bcryptjs handles password hashing at the application layer.
 model User {
-  id             String   @id @default(uuid())
-  email          String   @unique
+  id             String    @id @default(uuid())
+  email          String    @unique
   hashedPassword String
   name           String?
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  holdings       Holding[]
 
   @@map("users")
 }
@@ -38,6 +39,25 @@ model PasswordResetToken {
   createdAt DateTime  @default(now())
 
   @@map("password_reset_tokens")
+}
+
+/// User's portfolio holding. quantity supports fractional shares (up to 8 decimal places).
+/// costBasis is nullable because users adding a holding may not know their entry price
+/// (e.g., imported from a broker without cost basis data).
+model Holding {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  ticker    String
+  quantity  Decimal  @db.Decimal(20, 8)
+  costBasis Decimal? @map("cost_basis") @db.Decimal(20, 8)
+  addedAt   DateTime @default(now()) @map("added_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, ticker])
+  @@index([userId])
+  @@map("holdings")
 }
 
 /// Cached raw API responses from financial data providers.
