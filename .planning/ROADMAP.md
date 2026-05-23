@@ -144,11 +144,12 @@ Plans:
 
 ---
 
-### Phase 8: Depth Sections & Stretch Features
+### Phase 8: Depth Sections & Stretch Features *(completed 2026-05-23)*
 
 **Goal:** Add the data-quality-gated dashboard sections (Options, Segments) and stretch features (analysis history UI, CSV import) after confirming API coverage.
 **Mode:** mvp
 **Requirements:** DASH-07, DASH-08
+**Execution:** Wave 8A 2 parallel section agents (ExpectedMoveOptions, SegmentExpectations — each owning one component) → Wave 8B orchestrator wired both into `/dashboard/[ticker]`, removed the `PENDING_SECTIONS` array. Both sections ship with honest empty states (Options: no chain available, Segments: SEC 10-Q data not in Yahoo). Analysis history view was already delivered in Phase 6.
 **Success Criteria:**
 
 1. The Expected Move & Options section renders implied move, historical average, last quarter comparison, and options setup analysis for tickers with available options chain data; it hides gracefully with an explanatory message for tickers without options data.

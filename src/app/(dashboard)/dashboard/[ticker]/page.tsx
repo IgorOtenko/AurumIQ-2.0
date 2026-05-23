@@ -1,25 +1,19 @@
 import Link from "next/link";
 import LazySection from "@/components/dashboard/LazySection";
-import SectionSkeleton from "@/components/dashboard/SectionSkeleton";
-import SectionWrapper from "@/components/dashboard/SectionWrapper";
 import StockTickerBar from "@/components/portfolio/StockTickerBar";
 import AnalysisHistoryView from "@/components/sections/AnalysisHistoryView";
 import AnalystSetup from "@/components/sections/AnalystSetup";
 import BullBear from "@/components/sections/BullBear";
 import CatalystsRisks from "@/components/sections/CatalystsRisks";
+import ExpectedMoveOptions from "@/components/sections/ExpectedMoveOptions";
 import LiveOnTheCall from "@/components/sections/LiveOnTheCall";
 import NumbersGoingIn from "@/components/sections/NumbersGoingIn";
 import QoQYoYTrend from "@/components/sections/QoQYoYTrend";
+import SegmentExpectations from "@/components/sections/SegmentExpectations";
 import Sources from "@/components/sections/Sources";
 import StockHeader from "@/components/sections/StockHeader";
 
 const TICKER_REGEX = /^[A-Z0-9.]{1,10}$/;
-
-// Sections still pending — Phase 8 ships Segments + Options.
-const PENDING_SECTIONS = [
-  "Segment Expectations",
-  "Expected Move & Options",
-] as const;
 
 export default async function TickerDashboardPage({
   params,
@@ -90,11 +84,13 @@ export default async function TickerDashboardPage({
             <QoQYoYTrend ticker={symbol} />
           </LazySection>
 
-          {PENDING_SECTIONS.map((title) => (
-            <SectionWrapper key={title} title={title}>
-              <SectionSkeleton title={title} />
-            </SectionWrapper>
-          ))}
+          <LazySection title="Segment Expectations">
+            <SegmentExpectations ticker={symbol} />
+          </LazySection>
+
+          <LazySection title="Expected Move & Options">
+            <ExpectedMoveOptions ticker={symbol} />
+          </LazySection>
 
           <LazySection title="Bull vs Bear" className="lg:col-span-2">
             <BullBear ticker={symbol} />
