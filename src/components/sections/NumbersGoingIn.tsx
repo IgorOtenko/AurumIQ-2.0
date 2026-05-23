@@ -2,6 +2,7 @@
 
 import { useEarnings, useAnalyst } from '@/lib/finance/hooks';
 import { cn } from '@/lib/utils';
+import FreshnessIndicator from '@/components/dashboard/FreshnessIndicator';
 
 interface Props {
   ticker: string;
@@ -120,6 +121,14 @@ export default function NumbersGoingIn({ ticker }: Props) {
 
   const earningsPayload = earnings.data?.data ?? null;
   const stale = earnings.data?.stale === true || analyst.data?.stale === true;
+  const fromCache =
+    (earnings.data?.fromCache ?? false) || (analyst.data?.fromCache ?? false);
+  // Use the more recent of the two source timestamps so the pill reflects the
+  // freshest underlying data shown in this combined section.
+  const lastUpdated = Math.max(
+    earnings.dataUpdatedAt ?? 0,
+    analyst.dataUpdatedAt ?? 0,
+  );
 
   const revenueGrowth = earningsPayload?.financialData?.revenueGrowth ?? null;
   const epsEstimate =
@@ -149,11 +158,11 @@ export default function NumbersGoingIn({ ticker }: Props) {
             Consensus expectations and recent earnings track record.
           </p>
         </div>
-        {stale && (
-          <span className="rounded-full border border-border px-2 py-0.5 text-xs text-muted-foreground">
-            Showing cached data
-          </span>
-        )}
+        <FreshnessIndicator
+          updatedAt={lastUpdated || null}
+          fromCache={fromCache}
+          forceStale={stale}
+        />
       </header>
 
       {earnings.isLoading ? (

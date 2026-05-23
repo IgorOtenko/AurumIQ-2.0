@@ -128,11 +128,12 @@ Plans:
 
 ---
 
-### Phase 7: Observability, Polish & Interview Readiness
+### Phase 7: Observability, Polish & Interview Readiness *(completed 2026-05-23)*
 
 **Goal:** Integrate OpenTelemetry full-stack observability, add production-grade error handling, and achieve interview-quality documentation and UX polish.
 **Mode:** mvp
 **Requirements:** INFRA-02, INFRA-03
+**Execution:** Wave 7A foundation (OTel SDK + metrics + span helper + wiring into AI generate / finance cache / 3 cron jobs) → Wave 7B 3 parallel polish agents (freshness UI across all 8 sections, validator + cron Vitest + Playwright e2e + error refinement, README + architecture/AI/observability docs rewrite). 8 new tests (validator regressions for AAPL/NVDA + cron smoke). Bundle and test gates green; Lighthouse TTI deferred to actual deploy.
 **Success Criteria:**
 
 1. Every AI skill execution produces an OpenTelemetry trace containing skill duration, token counts, model used, and cache hit/miss status — visible in CloudWatch.

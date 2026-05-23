@@ -1,6 +1,7 @@
 import type { Prisma } from '@prisma/client';
 import { db } from '@/lib/db';
 import { financeLogger } from '@/lib/logger';
+import { financeCacheEvents } from '@/lib/telemetry/metrics';
 import type { DataType } from './types';
 
 export async function getCache(
@@ -22,8 +23,11 @@ export async function getCache(
     orderBy: { fetchedAt: 'desc' },
   });
 
+  // Cache lookups are too hot for a span per call — we use a counter instead
+  // so hit-rate dashboards work without inflating the trace stream.
   if (!row) {
     financeLogger.debug({ ticker: normalizedTicker, dataType }, 'cache miss');
+    financeCacheEvents.add(1, { dataType, outcome: 'miss' });
     return null;
   }
 
@@ -31,6 +35,7 @@ export async function getCache(
     { ticker: normalizedTicker, dataType, fetchedAt: row.fetchedAt },
     'cache hit',
   );
+  financeCacheEvents.add(1, { dataType, outcome: 'hit' });
   return row.data;
 }
 

@@ -8,6 +8,7 @@ import {
   type Time,
 } from 'lightweight-charts';
 import { useEarnings } from '@/lib/finance/hooks';
+import FreshnessIndicator from '@/components/dashboard/FreshnessIndicator';
 
 interface Props {
   ticker: string;
@@ -323,11 +324,11 @@ export default function QoQYoYTrend({ ticker }: Props) {
         <h2 className="text-base font-semibold text-foreground">
           QoQ / YoY Trend
         </h2>
-        {isStale ? (
-          <span className="rounded-full border border-border px-2 py-0.5 text-xs text-muted-foreground">
-            Showing cached data
-          </span>
-        ) : null}
+        <FreshnessIndicator
+          updatedAt={earnings.dataUpdatedAt || null}
+          fromCache={earnings.data?.fromCache ?? false}
+          forceStale={isStale}
+        />
       </div>
 
       {!hasAnyPoint ? (

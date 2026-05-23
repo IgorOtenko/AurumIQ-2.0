@@ -2,6 +2,7 @@
 
 import { usePrice, useProfile, useEarnings } from '@/lib/finance/hooks';
 import { cn } from '@/lib/utils';
+import FreshnessIndicator from '@/components/dashboard/FreshnessIndicator';
 
 interface Props {
   ticker: string;
@@ -150,8 +151,6 @@ export default function StockHeader({ ticker }: Props) {
     earningsData?.earningsChart?.quarterly,
   );
 
-  const isStale = price.data?.stale === true;
-
   return (
     <section
       aria-label={`${ticker} overview`}
@@ -164,11 +163,11 @@ export default function StockHeader({ ticker }: Props) {
           </h2>
           <p className="text-lg text-muted-foreground">{displayName}</p>
         </div>
-        {isStale ? (
-          <span className="rounded-full border border-border px-2 py-0.5 text-xs text-muted-foreground">
-            Showing cached data
-          </span>
-        ) : null}
+        <FreshnessIndicator
+          updatedAt={price.dataUpdatedAt || null}
+          fromCache={price.data?.fromCache ?? false}
+          forceStale={price.data?.stale ?? false}
+        />
       </div>
 
       <div className="mt-6 grid gap-6 md:grid-cols-2">

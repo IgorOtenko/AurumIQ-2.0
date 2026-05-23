@@ -62,8 +62,19 @@ export async function GET(
     return NextResponse.json({ data: result }, { status: 200 });
   } catch (error) {
     financeLogger.error({ err: error }, 'finance route unhandled error');
+    // Surface a user-actionable hint when the failure originates from the
+    // upstream finance data source (Yahoo Finance rate limiting is the
+    // dominant cause); generic 500 otherwise.
+    const rawMessage =
+      error instanceof Error ? error.message.toLowerCase() : '';
+    const isUpstreamFailure =
+      rawMessage.includes('yahoo') || rawMessage.includes('rate limit');
     return NextResponse.json(
-      { error: 'An unexpected error occurred' },
+      {
+        error: isUpstreamFailure
+          ? 'Market data temporarily unavailable — showing cached results when possible'
+          : 'An unexpected error occurred',
+      },
       { status: 500 },
     );
   }

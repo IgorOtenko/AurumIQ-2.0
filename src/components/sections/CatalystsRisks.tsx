@@ -8,6 +8,7 @@ import {
   type ProgressEvent,
 } from '@/lib/ai/api-client';
 import type { CatalystsRisksContent } from '@/lib/ai/types';
+import FreshnessIndicator from '@/components/dashboard/FreshnessIndicator';
 
 interface Props {
   ticker: string;
@@ -105,6 +106,13 @@ export default function CatalystsRisks({ ticker }: Props) {
               Generated {formatRelativeTime(analysis.generatedAt)}
             </span>
           )}
+          <FreshnessIndicator
+            updatedAt={
+              analysis?.generatedAt
+                ? new Date(analysis.generatedAt).getTime()
+                : null
+            }
+          />
           <button
             type="button"
             onClick={handleGenerate}

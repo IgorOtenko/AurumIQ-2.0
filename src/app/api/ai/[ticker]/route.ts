@@ -86,6 +86,11 @@ export async function POST(
       const send = (event: string, data: unknown) =>
         controller.enqueue(encoder.encode(sseEvent(event, data)));
 
+      // Phase-label the failure mode so the UI can show an actionable message:
+      // fetch failures usually resolve themselves in a few minutes (Yahoo
+      // Finance rate limits, transient DNS), while generation failures are
+      // billing/quota/API-key issues that won't fix on retry.
+      let phase: 'fetch' | 'generate' = 'fetch';
       try {
         send('progress', { step: 'fetching_data' });
 
@@ -104,6 +109,7 @@ export async function POST(
           profile: profile.data,
         };
 
+        phase = 'generate';
         send('progress', { step: 'generating' });
 
         const analysis = await generateSection({
@@ -117,10 +123,17 @@ export async function POST(
 
         send('complete', { analysis: serializeAnalysis(analysis) });
       } catch (err) {
-        aiLogger.error({ err, userId, ticker, sectionType }, 'SSE stream error');
-        send('error', {
-          message: err instanceof Error ? err.message : 'Unexpected error',
-        });
+        aiLogger.error(
+          { err, userId, ticker, sectionType, phase },
+          'SSE stream error',
+        );
+        const message =
+          phase === 'fetch'
+            ? `Failed to fetch market data for ${ticker} — try again in a few minutes`
+            : err instanceof Error
+              ? err.message
+              : 'Unexpected error';
+        send('error', { message });
       } finally {
         controller.close();
       }

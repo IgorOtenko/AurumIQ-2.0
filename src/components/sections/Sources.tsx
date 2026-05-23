@@ -11,6 +11,7 @@ import {
   useNews,
 } from "@/lib/finance/hooks";
 import type { AdapterResult } from "@/lib/finance/types";
+import FreshnessIndicator from "@/components/dashboard/FreshnessIndicator";
 
 interface Props {
   ticker: string;
@@ -102,6 +103,13 @@ export default function Sources({ ticker }: Props) {
 
   const now = Date.now();
 
+  const allQueries = [price, earnings, analyst, options, profile, news];
+  const aggregateUpdatedAt = Math.max(
+    ...allQueries.map((q) => q.dataUpdatedAt ?? 0),
+  );
+  const anyStale = allQueries.some((q) => q.data?.stale === true);
+  const anyFromCache = allQueries.some((q) => q.data?.fromCache === true);
+
   const rows: SourceRow[] = [
     { source: "Yahoo Finance", data: "Price & quote summary", query: price },
     { source: "Yahoo Finance", data: "Earnings", query: earnings },
@@ -113,11 +121,18 @@ export default function Sources({ ticker }: Props) {
 
   return (
     <section className="bg-card border border-border rounded-lg p-6">
-      <header className="mb-4">
-        <h2 className="text-lg font-semibold text-foreground">Sources</h2>
-        <p className="text-xs text-muted-foreground mt-1">
-          Client-side cache timestamps (server does not return a fetched-at).
-        </p>
+      <header className="mb-4 flex items-start justify-between gap-4">
+        <div>
+          <h2 className="text-lg font-semibold text-foreground">Sources</h2>
+          <p className="text-xs text-muted-foreground mt-1">
+            Client-side cache timestamps (server does not return a fetched-at).
+          </p>
+        </div>
+        <FreshnessIndicator
+          updatedAt={aggregateUpdatedAt || null}
+          fromCache={anyFromCache}
+          forceStale={anyStale}
+        />
       </header>
 
       <div className="grid grid-cols-[1fr_2fr_auto_auto] gap-x-4 gap-y-0">

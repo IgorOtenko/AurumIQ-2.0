@@ -6,6 +6,7 @@ import { useLatestAnalysis } from "@/lib/ai/hooks";
 import { generateAnalysisStream } from "@/lib/ai/api-client";
 import type { BullBearContent } from "@/lib/ai/types";
 import { cn } from "@/lib/utils";
+import FreshnessIndicator from "@/components/dashboard/FreshnessIndicator";
 
 interface Props {
   ticker: string;
@@ -208,6 +209,13 @@ export default function BullBear({ ticker }: Props) {
               Generated {formatRelative(analysis.generatedAt, Date.now())}
             </span>
           )}
+          <FreshnessIndicator
+            updatedAt={
+              analysis?.generatedAt
+                ? new Date(analysis.generatedAt).getTime()
+                : null
+            }
+          />
           <button
             type="button"
             onClick={handleRefresh}

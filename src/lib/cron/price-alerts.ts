@@ -3,11 +3,14 @@ import { db } from '@/lib/db';
 import { sendPriceAlert } from '@/lib/email';
 import { fetchPrice } from '@/lib/finance/adapters/price.adapter';
 import { logger } from '@/lib/logger';
+import { cronRuns } from '@/lib/telemetry/metrics';
+import { withSpan } from '@/lib/telemetry/spans';
 
 const SCHEDULE = '*/5 * * * *';
-const log = logger.child({ module: 'cron', job: 'price-alerts' });
+const JOB_NAME = 'price-alerts';
+const log = logger.child({ module: 'cron', job: JOB_NAME });
 
-async function tick(): Promise<void> {
+async function tickImpl(): Promise<void> {
   const alerts = await db.priceAlert.findMany({
     where: { active: true },
     include: { user: { select: { email: true } } },
@@ -62,6 +65,20 @@ async function tick(): Promise<void> {
   }
 
   log.info({ evaluated: alerts.length, triggered }, 'price alert tick complete');
+}
+
+// One span per tick (not per alert) — the tick is the meaningful unit of work
+// and per-alert spans would explode the trace volume on a populated DB.
+async function tick(): Promise<void> {
+  await withSpan('cron.price-alerts', { 'cron.job': JOB_NAME }, async () => {
+    try {
+      await tickImpl();
+      cronRuns.add(1, { job: JOB_NAME, outcome: 'success' });
+    } catch (err) {
+      cronRuns.add(1, { job: JOB_NAME, outcome: 'error' });
+      throw err;
+    }
+  });
 }
 
 export function register(): ScheduledTask {

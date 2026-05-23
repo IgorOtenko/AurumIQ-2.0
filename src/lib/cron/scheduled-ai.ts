@@ -7,11 +7,14 @@ import { fetchEarnings } from '@/lib/finance/adapters/earnings.adapter';
 import { fetchPrice } from '@/lib/finance/adapters/price.adapter';
 import { fetchProfile } from '@/lib/finance/adapters/profile.adapter';
 import { logger } from '@/lib/logger';
+import { cronRuns } from '@/lib/telemetry/metrics';
+import { withSpan } from '@/lib/telemetry/spans';
 
 const SCHEDULE = '* * * * *';
 const FIRE_WINDOW_MS = 60 * 1000;
 const HAIKU_MODEL = 'claude-haiku-4-5';
-const log = logger.child({ module: 'cron', job: 'scheduled-ai' });
+const JOB_NAME = 'scheduled-ai';
+const log = logger.child({ module: 'cron', job: JOB_NAME });
 
 // Convert a (year, month, day, hour, minute) expressed in `timezone` into
 // the UTC instant it corresponds to. We use Intl.DateTimeFormat to read
@@ -82,7 +85,7 @@ async function buildSources(ticker: string): Promise<SourcesData> {
   return { ticker, price, earnings, analyst, profile };
 }
 
-async function tick(): Promise<void> {
+async function tickImpl(): Promise<void> {
   const now = new Date();
   const schedules = await db.schedule.findMany({ where: { active: true } });
   if (schedules.length === 0) return;
@@ -132,6 +135,20 @@ async function tick(): Promise<void> {
       'scheduled AI tick complete',
     );
   }
+}
+
+// One span per tick. Nested `ai.generate` spans (from `generateSection`) will
+// attach to this as children automatically thanks to `tracer.startActiveSpan`.
+async function tick(): Promise<void> {
+  await withSpan('cron.scheduled-ai', { 'cron.job': JOB_NAME }, async () => {
+    try {
+      await tickImpl();
+      cronRuns.add(1, { job: JOB_NAME, outcome: 'success' });
+    } catch (err) {
+      cronRuns.add(1, { job: JOB_NAME, outcome: 'error' });
+      throw err;
+    }
+  });
 }
 
 export function register(): ScheduledTask {

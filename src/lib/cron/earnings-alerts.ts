@@ -3,10 +3,13 @@ import { db } from '@/lib/db';
 import { sendEarningsReminder } from '@/lib/email';
 import { withRetry, yahooFinance } from '@/lib/finance/yahoo-client';
 import { logger } from '@/lib/logger';
+import { cronRuns } from '@/lib/telemetry/metrics';
+import { withSpan } from '@/lib/telemetry/spans';
 
 const SCHEDULE = '0 * * * *';
 const MS_PER_DAY = 24 * 60 * 60 * 1000;
-const log = logger.child({ module: 'cron', job: 'earnings-alerts' });
+const JOB_NAME = 'earnings-alerts';
+const log = logger.child({ module: 'cron', job: JOB_NAME });
 
 // Yahoo's `calendarEvents.earnings.earningsDate` is an array of Date/number
 // candidates; we coerce to a single Date or return null when no upcoming
@@ -44,7 +47,7 @@ function startOfUtcDay(date: Date): Date {
   );
 }
 
-async function tick(): Promise<void> {
+async function tickImpl(): Promise<void> {
   const alerts = await db.earningsAlert.findMany({
     where: { active: true },
     include: { user: { select: { email: true } } },
@@ -108,6 +111,19 @@ async function tick(): Promise<void> {
     { evaluated: alerts.length, triggered },
     'earnings alert tick complete',
   );
+}
+
+// One span per tick (not per alert) — the tick is the meaningful unit of work.
+async function tick(): Promise<void> {
+  await withSpan('cron.earnings-alerts', { 'cron.job': JOB_NAME }, async () => {
+    try {
+      await tickImpl();
+      cronRuns.add(1, { job: JOB_NAME, outcome: 'success' });
+    } catch (err) {
+      cronRuns.add(1, { job: JOB_NAME, outcome: 'error' });
+      throw err;
+    }
+  });
 }
 
 export function register(): ScheduledTask {

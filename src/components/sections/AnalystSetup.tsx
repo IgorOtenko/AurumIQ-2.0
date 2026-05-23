@@ -1,6 +1,7 @@
 "use client";
 
 import { useAnalyst, useEarnings } from "@/lib/finance/hooks";
+import FreshnessIndicator from "@/components/dashboard/FreshnessIndicator";
 
 interface Props {
   ticker: string;
@@ -90,26 +91,18 @@ function Legend({ buckets }: { buckets: RatingBucket[] }) {
   );
 }
 
-function StalePill() {
-  return (
-    <span className="rounded-full border border-border bg-muted px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
-      Stale
-    </span>
-  );
-}
-
 function SectionShell({
   children,
-  stale,
+  freshness,
 }: {
   children: React.ReactNode;
-  stale?: boolean;
+  freshness?: React.ReactNode;
 }) {
   return (
     <section className="rounded-lg border border-border bg-card p-6">
       <header className="mb-4 flex items-center justify-between">
         <h3 className="text-sm font-semibold text-foreground">Analyst Setup</h3>
-        {stale ? <StalePill /> : null}
+        {freshness}
       </header>
       {children}
     </section>
@@ -150,6 +143,20 @@ export default function AnalystSetup({ ticker }: Props) {
   }
 
   const stale = Boolean(analyst.data?.stale || earnings.data?.stale);
+  const fromCache = Boolean(
+    analyst.data?.fromCache || earnings.data?.fromCache,
+  );
+  const lastUpdated = Math.max(
+    analyst.dataUpdatedAt ?? 0,
+    earnings.dataUpdatedAt ?? 0,
+  );
+  const freshness = (
+    <FreshnessIndicator
+      updatedAt={lastUpdated || null}
+      fromCache={fromCache}
+      forceStale={stale}
+    />
+  );
 
   const trendArr = analyst.data?.data?.recommendationTrend?.trend ?? [];
   const currentTrend = trendArr.find((t) => t.period === "0m") ?? trendArr[0];
@@ -167,7 +174,7 @@ export default function AnalystSetup({ ticker }: Props) {
   // on the AnalystData type — skipping the revisions block until Phase 7 widens it.
 
   return (
-    <SectionShell stale={stale}>
+    <SectionShell freshness={freshness}>
       <div className="space-y-6">
         <div>
           <div className="mb-2 flex items-center justify-between">
