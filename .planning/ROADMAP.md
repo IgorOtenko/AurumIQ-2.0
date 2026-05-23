@@ -80,11 +80,12 @@ Plans:
 
 ---
 
-### Phase 4: Non-AI Dashboard Sections
+### Phase 4: Non-AI Dashboard Sections *(completed 2026-05-23)*
 
 **Goal:** Build all four data-driven dashboard sections end-to-end so users see real financial data flowing through the validated data layer.
 **Mode:** mvp
 **Requirements:** DASH-02, DASH-03, DASH-04, DASH-05, DASH-06
+**Execution:** Wave 4A foundation (finance hooks, useInView, LazySection, lightweight-charts) → Wave 4B 5 parallel agents (StockHeader, NumbersGoingIn, QoQYoYTrend, AnalystSetup, Sources) → Wave 4C orchestrator wired sections into `/dashboard/[ticker]` → user browser-verified.
 **Success Criteria:**
 
 1. Selecting a ticker shows the Stock Header with live price, YTD performance, earnings date, market cap, and sector — all sourced from the data layer.

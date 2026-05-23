@@ -1,25 +1,25 @@
 import Link from "next/link";
-import SectionWrapper from "@/components/dashboard/SectionWrapper";
+import LazySection from "@/components/dashboard/LazySection";
 import SectionSkeleton from "@/components/dashboard/SectionSkeleton";
+import SectionWrapper from "@/components/dashboard/SectionWrapper";
 import StockTickerBar from "@/components/portfolio/StockTickerBar";
+import AnalystSetup from "@/components/sections/AnalystSetup";
+import NumbersGoingIn from "@/components/sections/NumbersGoingIn";
+import QoQYoYTrend from "@/components/sections/QoQYoYTrend";
+import Sources from "@/components/sections/Sources";
+import StockHeader from "@/components/sections/StockHeader";
 
 const TICKER_REGEX = /^[A-Z0-9.]{1,10}$/;
 
-const SECTION_TITLES = [
-  "Stock Header",
-  "Numbers Going In",
-  "QoQ / YoY Trend",
+// Sections not yet built — Phase 5 ships the 3 AI sections (Bull vs Bear,
+// Catalysts & Risks, Live on the Call) and Phase 8 ships Segments + Options.
+const PENDING_SECTIONS = [
   "Segment Expectations",
   "Expected Move & Options",
   "Bull vs Bear",
   "Catalysts & Risks",
   "Live on the Call",
-  "Analyst Setup",
-  "Sources",
 ] as const;
-
-// Stock Header spans the full grid width above the 2-column section grid.
-const FULL_WIDTH_INDEXES = new Set<number>([0]);
 
 export default async function TickerDashboardPage({
   params,
@@ -68,18 +68,33 @@ export default async function TickerDashboardPage({
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-6 py-6">
+      <main className="max-w-7xl mx-auto px-6 py-6 space-y-4">
+        <LazySection title="Stock Header" className="lg:col-span-2">
+          <StockHeader ticker={symbol} />
+        </LazySection>
+
         <div className="grid gap-4 grid-cols-1 lg:grid-cols-2">
-          {SECTION_TITLES.map((title, idx) => (
-            <div
-              key={title}
-              className={FULL_WIDTH_INDEXES.has(idx) ? "lg:col-span-2" : ""}
-            >
-              <SectionWrapper title={title}>
-                <SectionSkeleton title={title} />
-              </SectionWrapper>
-            </div>
+          <LazySection title="Numbers Going In">
+            <NumbersGoingIn ticker={symbol} />
+          </LazySection>
+
+          <LazySection title="QoQ / YoY Trend">
+            <QoQYoYTrend ticker={symbol} />
+          </LazySection>
+
+          {PENDING_SECTIONS.map((title) => (
+            <SectionWrapper key={title} title={title}>
+              <SectionSkeleton title={title} />
+            </SectionWrapper>
           ))}
+
+          <LazySection title="Analyst Setup">
+            <AnalystSetup ticker={symbol} />
+          </LazySection>
+
+          <LazySection title="Sources" className="lg:col-span-2">
+            <Sources ticker={symbol} />
+          </LazySection>
         </div>
       </main>
     </div>

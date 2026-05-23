@@ -22,6 +22,7 @@
     "bcryptjs": "^2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "lightweight-charts": "^4.2.3",
     "lucide-react": "^1.16.0",
     "next": "^15",
     "next-auth": "5.0.0-beta.25",
