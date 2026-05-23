@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: aurumiq-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: aurumiq
+      POSTGRES_PASSWORD: 9050fe5b8eba539b1ef6fb84e1c9c521
+      POSTGRES_DB: aurumiq
+    ports:
+      - "5432:5432"
+    volumes:
+      - aurumiq-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aurumiq -d aurumiq"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  aurumiq-pgdata:
