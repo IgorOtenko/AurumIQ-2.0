@@ -1,0 +1,1603 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AurumIQ — Interview Deck</title>
+    <style>
+      :root {
+        --bg: #0a0a0a;
+        --card: #141414;
+        --card-elev: #1a1a1a;
+        --border: #262626;
+        --fg: #ededed;
+        --muted: #888;
+        --muted-bg: #1a1a1a;
+        --emerald: #10b981;
+        --emerald-tint: rgba(16, 185, 129, 0.1);
+        --rose: #f43f5e;
+        --rose-tint: rgba(244, 63, 94, 0.1);
+        --amber: #f59e0b;
+        --amber-tint: rgba(245, 158, 11, 0.12);
+        --sky: #38bdf8;
+        --sky-tint: rgba(56, 189, 248, 0.12);
+        --violet: #a78bfa;
+        --violet-tint: rgba(167, 139, 250, 0.12);
+        --shadow: 0 1px 0 rgba(255, 255, 255, 0.03) inset;
+        --mono: 'SF Mono', Menlo, Consolas, monospace;
+        --sans:
+          -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, system-ui,
+          sans-serif;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html,
+      body {
+        background: var(--bg);
+        color: var(--fg);
+        font-family: var(--sans);
+        font-size: 16px;
+        line-height: 1.5;
+        overflow: hidden;
+        -webkit-font-smoothing: antialiased;
+      }
+      .deck {
+        position: fixed;
+        inset: 0;
+      }
+      .slide {
+        position: absolute;
+        inset: 0;
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        padding: 56px 80px 90px;
+        animation: fade 0.2s ease;
+      }
+      .slide.active {
+        display: flex;
+      }
+      @keyframes fade {
+        from {
+          opacity: 0;
+          transform: translateY(4px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      .inner {
+        max-width: 1240px;
+        width: 100%;
+        margin: 0 auto;
+      }
+
+      /* ---------- chrome ---------- */
+      .nav {
+        position: fixed;
+        bottom: 24px;
+        left: 0;
+        right: 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 80px;
+        font-size: 12px;
+        color: var(--muted);
+        pointer-events: none;
+        z-index: 100;
+      }
+      .nav .brand {
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--fg);
+        opacity: 0.7;
+      }
+      .nav .brand span {
+        color: var(--amber);
+      }
+      .nav .counter {
+        font-family: var(--mono);
+      }
+      .progress {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 2px;
+        background: var(--amber);
+        z-index: 100;
+        transition: width 0.25s ease;
+      }
+      .help {
+        position: fixed;
+        bottom: 24px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 11px;
+        color: var(--muted);
+        font-family: var(--mono);
+      }
+      .help kbd {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 1px 6px;
+        margin: 0 2px;
+        font-family: var(--mono);
+        font-size: 10px;
+      }
+
+      /* ---------- typography ---------- */
+      h1.deck-title {
+        font-size: 88px;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        line-height: 1;
+        margin-bottom: 24px;
+      }
+      h1.deck-title .accent {
+        color: var(--amber);
+      }
+      h2.slide-title {
+        font-size: 38px;
+        font-weight: 700;
+        letter-spacing: -0.015em;
+        margin-bottom: 8px;
+      }
+      .slide-eyebrow {
+        font-size: 11px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 14px;
+      }
+      .slide-subtitle {
+        font-size: 18px;
+        color: var(--muted);
+        margin-bottom: 32px;
+        max-width: 1000px;
+      }
+      .tagline {
+        font-size: 22px;
+        color: var(--muted);
+        max-width: 720px;
+        margin-bottom: 40px;
+      }
+      .tagline strong {
+        color: var(--fg);
+        font-weight: 500;
+      }
+      .row {
+        display: grid;
+        gap: 16px;
+      }
+      .row.cols-2 {
+        grid-template-columns: 1fr 1fr;
+      }
+      .row.cols-3 {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .row.cols-4 {
+        grid-template-columns: repeat(4, 1fr);
+      }
+
+      /* ---------- cards ---------- */
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 18px 20px;
+        box-shadow: var(--shadow);
+      }
+      .card.tight {
+        padding: 12px 14px;
+      }
+      .card .label {
+        font-size: 10px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 6px;
+      }
+      .accent-left {
+        border-left: 3px solid var(--border);
+      }
+      .accent-left.emerald {
+        border-left-color: var(--emerald);
+      }
+      .accent-left.rose {
+        border-left-color: var(--rose);
+      }
+      .accent-left.amber {
+        border-left-color: var(--amber);
+      }
+      .accent-left.sky {
+        border-left-color: var(--sky);
+      }
+      .accent-left.violet {
+        border-left-color: var(--violet);
+      }
+
+      /* ---------- pills ---------- */
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        border-radius: 999px;
+        padding: 3px 10px;
+        font-size: 11px;
+        font-family: var(--mono);
+        letter-spacing: 0.04em;
+      }
+      .pill.emerald {
+        background: var(--emerald-tint);
+        color: var(--emerald);
+      }
+      .pill.rose {
+        background: var(--rose-tint);
+        color: var(--rose);
+      }
+      .pill.amber {
+        background: var(--amber-tint);
+        color: var(--amber);
+      }
+      .pill.sky {
+        background: var(--sky-tint);
+        color: var(--sky);
+      }
+      .pill.violet {
+        background: var(--violet-tint);
+        color: var(--violet);
+      }
+      .pill.muted {
+        background: var(--muted-bg);
+        color: var(--muted);
+      }
+
+      /* ---------- bullets ---------- */
+      .bullets {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .bullets li {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        font-size: 15px;
+        line-height: 1.5;
+      }
+      .bullets li::before {
+        content: '';
+        flex: 0 0 6px;
+        width: 6px;
+        height: 6px;
+        margin-top: 9px;
+        background: var(--amber);
+        border-radius: 50%;
+      }
+      .bullets.muted li::before {
+        background: var(--muted);
+      }
+      .bullets li strong {
+        color: var(--fg);
+        font-weight: 600;
+      }
+      .bullets li .note {
+        color: var(--muted);
+        display: block;
+        font-size: 13px;
+        margin-top: 1px;
+      }
+
+      /* ---------- code ---------- */
+      code,
+      pre,
+      .mono {
+        font-family: var(--mono);
+        font-size: 13px;
+      }
+      pre {
+        background: var(--muted-bg);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 14px 16px;
+        overflow: auto;
+        line-height: 1.55;
+        color: #d4d4d4;
+      }
+      pre .k { color: #c586c0; }
+      pre .s { color: #ce9178; }
+      pre .c { color: #6a9955; font-style: italic; }
+      pre .n { color: #b5cea8; }
+      pre .f { color: #dcdcaa; }
+      pre .v { color: #9cdcfe; }
+
+      /* ---------- badges ---------- */
+      .stack {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 6px;
+      }
+      .stack .badge {
+        font-family: var(--mono);
+        font-size: 11px;
+        padding: 4px 10px;
+        background: var(--muted-bg);
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        color: var(--muted);
+      }
+      .stack .badge.lead {
+        color: var(--fg);
+        border-color: #3a3a3a;
+        background: var(--card);
+      }
+
+      /* ---------- diagram primitives ---------- */
+      .diagram {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 24px;
+      }
+      .diagram .box {
+        background: var(--muted-bg);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 10px 14px;
+        font-size: 13px;
+        font-family: var(--mono);
+      }
+      .diagram .box.lead {
+        background: var(--card);
+        border-color: var(--amber);
+        color: var(--fg);
+      }
+      .arrow {
+        color: var(--muted);
+        font-family: var(--mono);
+      }
+
+      /* ---------- skill name styling ---------- */
+      .skill-name {
+        font-family: var(--mono);
+        font-weight: 600;
+        font-size: 13px;
+      }
+      .skill-line {
+        display: grid;
+        grid-template-columns: 220px 1fr;
+        gap: 14px;
+        padding: 7px 0;
+        font-size: 13.5px;
+        align-items: baseline;
+      }
+      .skill-line + .skill-line {
+        border-top: 1px dashed var(--border);
+      }
+      .skill-line .desc {
+        color: var(--muted);
+        line-height: 1.45;
+      }
+      .skill-line .desc strong {
+        color: var(--fg);
+        font-weight: 600;
+      }
+
+      /* ---------- numbered ---------- */
+      .numbered {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        counter-reset: step;
+      }
+      .numbered li {
+        counter-increment: step;
+        display: flex;
+        gap: 14px;
+        align-items: flex-start;
+        font-size: 15px;
+      }
+      .numbered li::before {
+        content: counter(step);
+        flex: 0 0 26px;
+        height: 26px;
+        background: var(--amber-tint);
+        color: var(--amber);
+        border-radius: 999px;
+        font-family: var(--mono);
+        font-size: 11px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .numbered li div {
+        flex: 1;
+      }
+      .numbered li strong {
+        color: var(--fg);
+        font-weight: 600;
+      }
+      .numbered li .desc {
+        color: var(--muted);
+        display: block;
+        font-size: 13px;
+        margin-top: 1px;
+      }
+
+      /* ---------- mock app sections ---------- */
+      .mock {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 18px 20px;
+      }
+      .mock h3 {
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .mock h3 .right {
+        text-transform: none;
+        letter-spacing: 0;
+      }
+      .mock .row-flex {
+        display: flex;
+        gap: 12px;
+      }
+      .mock .metric {
+        flex: 1;
+      }
+      .mock .metric .l {
+        font-size: 9px;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        color: var(--muted);
+      }
+      .mock .metric .v {
+        font-size: 20px;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+        margin-top: 2px;
+      }
+      .mock .metric .d {
+        font-size: 11px;
+        font-variant-numeric: tabular-nums;
+        margin-top: 2px;
+      }
+      .mock .bull-list {
+        list-style: none;
+        font-size: 11.5px;
+        line-height: 1.5;
+        color: #d4d4d4;
+      }
+      .mock .bull-list li {
+        padding: 3px 0;
+        padding-left: 10px;
+        position: relative;
+      }
+      .mock .bull-list li::before {
+        content: '•';
+        position: absolute;
+        left: 0;
+        color: var(--muted);
+      }
+
+      /* ---------- highlights ---------- */
+      .highlight-box {
+        background: linear-gradient(
+          135deg,
+          rgba(245, 158, 11, 0.06),
+          transparent 60%
+        );
+        border: 1px solid #3a2f15;
+        border-radius: 12px;
+        padding: 16px 20px;
+      }
+      .highlight-box .label {
+        font-size: 11px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--amber);
+        margin-bottom: 6px;
+      }
+      .quote {
+        font-family: var(--mono);
+        font-size: 14px;
+        color: #d4d4d4;
+        line-height: 1.6;
+      }
+
+      /* ---------- skill-system header ---------- */
+      .skill-system-card {
+        display: grid;
+        grid-template-columns: 220px 1fr;
+        gap: 24px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 22px 24px;
+        align-items: stretch;
+      }
+      .skill-system-card .left {
+        border-right: 1px solid var(--border);
+        padding-right: 24px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+      .skill-system-card .system-name {
+        font-family: var(--mono);
+        font-size: 20px;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+      }
+      .skill-system-card .system-tag {
+        font-size: 11px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-top: 6px;
+      }
+      .skill-system-card .system-meta {
+        font-size: 12px;
+        color: var(--muted);
+        margin-top: 10px;
+        line-height: 1.5;
+      }
+
+      /* ---------- final slide ---------- */
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+      }
+      .stat {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 22px 20px;
+        text-align: center;
+      }
+      .stat .n {
+        font-size: 44px;
+        font-weight: 700;
+        font-variant-numeric: tabular-nums;
+        color: var(--amber);
+        line-height: 1;
+      }
+      .stat .t {
+        font-size: 12px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-top: 10px;
+      }
+
+      .footnote {
+        font-size: 12px;
+        color: var(--muted);
+        font-family: var(--mono);
+        margin-top: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="progress" id="progress"></div>
+    <div class="nav">
+      <div class="brand">Aurum<span>IQ</span></div>
+      <div class="counter"><span id="cur">1</span> / <span id="tot">15</span></div>
+    </div>
+    <div class="help">
+      <kbd>←</kbd> <kbd>→</kbd> navigate · <kbd>F</kbd> fullscreen
+    </div>
+
+    <div class="deck">
+      <!-- ============ SLIDE 1 — Title ============ -->
+      <section class="slide active">
+        <div class="inner">
+          <div class="slide-eyebrow">Interview presentation · 30 min</div>
+          <h1 class="deck-title">Aurum<span class="accent">IQ</span></h1>
+          <p class="tagline">
+            <strong>AI-powered stock research dashboard,</strong> built with a
+            layered skill stack — Superpowers · GSD · claude-mem · claude-api ·
+            frontend-design — composed to ship 33 requirements across 8 phases.
+          </p>
+          <div class="stack">
+            <span class="badge lead">Next.js 15</span>
+            <span class="badge lead">React 19</span>
+            <span class="badge lead">TypeScript</span>
+            <span class="badge lead">Prisma + PostgreSQL</span>
+            <span class="badge lead">Claude Sonnet 4.6</span>
+            <span class="badge">Tailwind v4 · shadcn/ui</span>
+            <span class="badge">Tanstack Query</span>
+            <span class="badge">Auth.js v5</span>
+            <span class="badge">node-cron</span>
+            <span class="badge">OpenTelemetry</span>
+            <span class="badge">Vitest · Playwright</span>
+          </div>
+          <div class="footnote" style="margin-top: 28px;">
+            Product depth · Architecture · Skill methodology · Q&amp;A
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ SLIDE 2 — The Problem ============ -->
+      <section class="slide">
+        <div class="inner">
+          <div class="slide-eyebrow">The problem</div>
+          <h2 class="slide-title">Stock research is fragmented and slow.</h2>
+          <p class="slide-subtitle">
+            A retail investor pulls from 5+ disconnected sources, manually
+            synthesizes the picture, and re-does it every quarter per holding.
+          </p>
+
+          <div class="row cols-2" style="margin-top: 4px;">
+            <div class="card accent-left rose">
+              <div class="label">Today's workflow</div>
+              <ul class="bullets muted" style="margin-top: 10px; font-size: 14px;">
+                <li><span><strong>Yahoo Finance</strong> for prices and earnings dates</span></li>
+                <li><span><strong>Seeking Alpha</strong> for analyst sentiment</span></li>
+                <li><span><strong>SEC 10-Qs</strong> for segment breakdowns</span></li>
+                <li><span><strong>Twitter / Substack</strong> for catalysts</span></li>
+                <li><span><strong>A spreadsheet</strong> to glue it together</span></li>
+              </ul>
+              <p class="footnote" style="margin-top: 12px;">
+                Time per holding: 2–4 hours. Multiply by 10 holdings, every quarter.
+              </p>
+            </div>
+            <div class="card accent-left emerald">
+              <div class="label">What AurumIQ delivers</div>
+              <ul class="bullets" style="margin-top: 10px; font-size: 14px;">
+                <li><span><strong>One view per ticker</strong><span class="note">10 sections — numbers, trends, analyst setup, AI bull/bear thesis, sources, and analysis history</span></span></li>
+                <li><span><strong>AI synthesis I can trust</strong><span class="note">Every figure traces to source data — invented numbers get rejected before they reach the UI</span></span></li>
+                <li><span><strong>Automated</strong><span class="note">Scheduled daily regeneration + price/earnings alerts</span></span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ SLIDE 3 — The Product ============ -->
+      <section class="slide">
+        <div class="inner">
+          <div class="slide-eyebrow">The product</div>
+          <h2 class="slide-title">One dashboard. Ten sections. Per stock.</h2>
+          <p class="slide-subtitle">
+            Five data sections, three AI sections, two depth sections — each
+            lazy-mounted, each in its own error boundary so one failure can't
+            crash the dashboard.
+          </p>
+
+          <div class="row cols-2" style="gap: 14px;">
+            <div class="mock" style="grid-column: 1 / -1;">
+              <h3>
+                Stock Header · AAPL — Apple Inc.
+                <span class="right"><span class="pill emerald">Fresh · 2m ago</span></span>
+              </h3>
+              <div class="row-flex">
+                <div class="metric">
+                  <div class="l">Price</div>
+                  <div class="v">$189.43</div>
+                  <div class="d" style="color: var(--emerald);">+1.27 (+0.67%)</div>
+                </div>
+                <div class="metric">
+                  <div class="l">Market Cap</div>
+                  <div class="v">$2.95T</div>
+                  <div class="d" style="color: var(--muted);">USD</div>
+                </div>
+                <div class="metric">
+                  <div class="l">Sector</div>
+                  <div class="v" style="font-size: 15px; font-weight: 500;">Technology</div>
+                  <div class="d" style="color: var(--muted);">Consumer Electronics</div>
+                </div>
+                <div class="metric">
+                  <div class="l">Next Earnings</div>
+                  <div class="v" style="font-size: 15px; font-weight: 500;">Feb 1, 2026</div>
+                  <div class="d" style="color: var(--muted);">38 days</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="mock">
+              <h3>
+                Bull vs Bear
+                <span class="right"><span class="pill sky">AI · Sonnet 4.6</span></span>
+              </h3>
+              <p style="font-style: italic; font-size: 12px; color: var(--muted); margin-bottom: 10px;">
+                Services momentum and a $215 mean target give a 13% setup,
+                offset by a 25% iPhone concentration risk.
+              </p>
+              <div class="row cols-2" style="gap: 10px;">
+                <div class="mock accent-left emerald" style="padding: 10px 12px; background: var(--card-elev);">
+                  <div style="font-size: 10px; font-weight: 700; letter-spacing: 0.14em; color: var(--emerald); margin-bottom: 6px;">BULL CASE</div>
+                  <ul class="bull-list">
+                    <li>Services rev +16.6% YoY</li>
+                    <li>$215 mean target → 13% upside</li>
+                    <li>59/62 analysts buy</li>
+                  </ul>
+                </div>
+                <div class="mock accent-left rose" style="padding: 10px 12px; background: var(--card-elev);">
+                  <div style="font-size: 10px; font-weight: 700; letter-spacing: 0.14em; color: var(--rose); margin-bottom: 6px;">BEAR CASE</div>
+                  <ul class="bull-list">
+                    <li>iPhone concentration</li>
+                    <li>FX headwinds in EMEA</li>
+                    <li>Capex peak signaling</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="mock">
+              <h3>
+                Numbers Going In
+                <span class="right"><span class="pill emerald">Fresh · 2m ago</span></span>
+              </h3>
+              <div class="row-flex" style="margin-bottom: 10px;">
+                <div class="metric">
+                  <div class="l">Rev Growth</div>
+                  <div class="v" style="color: var(--emerald);">+6.2%</div>
+                </div>
+                <div class="metric">
+                  <div class="l">EPS Estimate</div>
+                  <div class="v">$2.35</div>
+                </div>
+                <div class="metric">
+                  <div class="l">Analyst Target</div>
+                  <div class="v">$215.00</div>
+                </div>
+              </div>
+              <div style="font-family: var(--mono); font-size: 11px; color: var(--muted); border-top: 1px solid var(--border); padding-top: 8px;">
+                <div style="display: flex; justify-content: space-between; padding: 2px 0; color: var(--fg);">
+                  <span>4Q2024</span><span>Est $2.10</span><span>Act $2.18</span><span style="color: var(--emerald);">+3.8%</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 2px 0; color: var(--fg);">
+                  <span>1Q2025</span><span>Est $1.58</span><span>Act $1.65</span><span style="color: var(--emerald);">+4.4%</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 2px 0; color: var(--fg);">
+                  <span>2Q2025</span><span>Est $1.35</span><span>Act $1.40</span><span style="color: var(--emerald);">+3.7%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <p class="footnote">
+            Live at <code>localhost:3000/dashboard/AAPL</code> · 10 real sections, 3 history views
+          </p>
+        </div>
+      </section>
+
+      <!-- ============ SLIDE 4 — Architecture ============ -->
+      <section class="slide">
+        <div class="inner">
+          <div class="slide-eyebrow">Architecture</div>
+          <h2 class="slide-title">One Next.js process. Three external surfaces.</h2>
+          <p class="slide-subtitle">
+            Server Components do the heavy lifting; clients hold only
+            interactive state. Background work runs in-process via node-cron,
+            registered at startup via <code>instrumentation.ts</code>.
+          </p>
+
+          <div class="diagram" style="padding: 28px;">
+            <div style="display: grid; grid-template-columns: 1fr 1.4fr 1fr; gap: 22px; align-items: center;">
+              <div style="display: flex; flex-direction: column; gap: 10px;">
+                <div class="box lead" style="text-align: center;">Browser</div>
+                <div class="box" style="text-align: center;">React 19 RSC + Tanstack Query</div>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 8px;">
+                <div class="box lead" style="text-align: center; padding: 12px;">
+                  Next.js 15 (Node runtime)
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                  <div class="box" style="text-align: center; font-size: 11px;">App Router pages</div>
+                  <div class="box" style="text-align: center; font-size: 11px;">API route handlers</div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                  <div class="box" style="text-align: center; font-size: 11px;">Auth.js v5 middleware</div>
+                  <div class="box" style="text-align: center; font-size: 11px;">SSE generator</div>
+                </div>
+                <div class="box" style="text-align: center; background: var(--amber-tint); border-color: var(--amber); color: var(--amber); font-size: 11px;">
+                  node-cron jobs · price · earnings · scheduled AI
+                </div>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 10px;">
+                <div class="box" style="text-align: center;">
+                  PostgreSQL 16<br/>
+                  <span style="color: var(--muted); font-size: 11px;">9 Prisma models + JSONB cache</span>
+                </div>
+                <div class="box" style="text-align: center;">
+                  Yahoo Finance<br/>
+                  <span style="color: var(--muted); font-size: 11px;">quoteSummary · options · search</span>
+                </div>
+                <div class="box" style="text-align: center; border-color: var(--violet);">
+                  Anthropic API<br/>
+                  <span style="color: var(--muted); font-size: 11px;">Sonnet 4.6 · Haiku 4.5</span>
+                </div>
+              </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 22px; font-family: var(--mono); font-size: 11px; color: var(--muted);">
+              OpenTelemetry spans wrap <code>ai.generate</code>, <code>cron.&lt;job&gt;</code>, and <code>finance.cache</code>.
+              Pino structured logging with per-module child loggers.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ SLIDE 5 — AI Pipeline + Hallucination ============ -->
+      <section class="slide">
+        <div class="inner">
+          <div class="slide-eyebrow">The critical engineering</div>
+          <h2 class="slide-title">AI synthesis with a three-layer validator.</h2>
+          <p class="slide-subtitle">
+            <code>messages.parse()</code> + <code>zodOutputFormat()</code> enforce
+            schema server-side. A traceability validator catches invented
+            numbers but lets through legitimate derivations like implied upside.
+          </p>
+
+          <div class="row cols-2" style="gap: 18px;">
+            <div>
+              <ol class="numbered">
+                <li><div>
+                  <strong>Structured output (server-side)</strong>
+                  <span class="desc">Anthropic enforces a Zod-derived JSON schema; the model can't return free-form prose where JSON should be.</span>
+                </div></li>
+                <li><div>
+                  <strong>Zod parse (client-side)</strong>
+                  <span class="desc">SDK strips unsupported constraints (array lengths) and validates them in Zod after the response lands.</span>
+                </div></li>
+                <li><div>
+                  <strong>Traceability check</strong>
+                  <span class="desc">Every currency, percent, or large bare number in the output must match a source value — directly, by unit conversion, by compact scaling, or as a pairwise derivation.</span>
+                </div></li>
+              </ol>
+
+              <div class="highlight-box" style="margin-top: 18px;">
+                <div class="label">On failure</div>
+                <p class="quote">
+                  Status → <code>validation_failed</code>. <strong>Prior content
+                  is left untouched</strong> — user keeps the last validated
+                  version with an amber warning. We never overwrite verified
+                  analysis with hallucinated numbers.
+                </p>
+              </div>
+            </div>
+
+            <div>
+              <div class="card">
+                <div class="label">Real regression — NVDA verification</div>
+                <p style="font-size: 13px; color: var(--muted); margin-top: 4px;">
+                  Output contained <strong style="color: var(--fg);">"36.6% upside"</strong>. Substring search couldn't find <code>36.6</code> in the source.
+                </p>
+              </div>
+              <div class="card" style="margin-top: 10px;">
+                <div class="label">Source data passed to the prompt</div>
+                <pre style="margin-top: 4px;"><span class="v">targetMeanPrice</span>: <span class="n">294.22</span>,
+<span class="v">currentPrice</span>: <span class="n">215.33</span></pre>
+              </div>
+              <div class="card" style="margin-top: 10px;">
+                <div class="label">The validator's derivation check</div>
+                <pre style="margin-top: 4px;"><span class="c">// for every pair (a, b) in source</span>
+<span class="k">const</span> ratio = (b - a) / a;
+<span class="k">if</span> (nearMatch(target, ratio * <span class="n">100</span>)) <span class="k">return true</span>;
+
+<span class="c">// (294.22 - 215.33) / 215.33 * 100 = 36.6 ✓</span></pre>
+              </div>
+              <p class="footnote">
+                8 Vitest cases lock this regression behavior in.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ SLIDE 6 — Methodology Overview ============ -->
+      <section class="slide">
+        <div class="inner">
+          <div class="slide-eyebrow">Engineering with AI · the methodology</div>
+          <h2 class="slide-title">I composed a stack of five skill systems.</h2>
+          <p class="slide-subtitle">
+            Each layer does one job well. Composition is the engineering — and
+            the registry at <code>.claude/skill-registry.md</code> is the contract
+            that keeps me reaching for the right tool, not just typing into Claude.
+          </p>
+
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <div class="skill-system-card" style="grid-template-columns: 200px 1fr;">
+              <div class="left" style="border-right-color: var(--violet); padding-right: 20px;">
+                <div class="system-name" style="color: var(--violet);">Superpowers</div>
+                <div class="system-tag">Core workflow protocols</div>
+              </div>
+              <div style="font-size: 14px; color: var(--muted); line-height: 1.55;">
+                writing-plans · executing-plans · subagent-driven-development · dispatching-parallel-agents · verification-before-completion · test-driven-development · using-git-worktrees
+              </div>
+            </div>
+
+            <div class="skill-system-card" style="grid-template-columns: 200px 1fr;">
+              <div class="left" style="border-right-color: var(--amber); padding-right: 20px;">
+                <div class="system-name" style="color: var(--amber);">GSD</div>
+                <div class="system-tag">Project lifecycle</div>
+              </div>
+              <div style="font-size: 14px; color: var(--muted); line-height: 1.55;">
+                gsd-new-project · gsd-plan-phase · gsd-execute-phase · gsd-verify-work · gsd-secure-phase · gsd-ai-integration-phase · gsd-ui-phase · gsd-ship · gsd-audit-fix
+              </div>
+            </div>
+
+            <div class="skill-system-card" style="grid-template-columns: 200px 1fr;">
+              <div class="left" style="border-right-color: var(--emerald); padding-right: 20px;">
+                <div class="system-name" style="color: var(--emerald);">claude-mem</div>
+                <div class="system-tag">Persistent memory across sessions</div>
+              </div>
+              <div style="font-size: 14px; color: var(--muted); line-height: 1.55;">
+                learn-codebase · pathfinder · mem-search · timeline-report · make-plan · do · knowledge-agent
+              </div>
+            </div>
+
+            <div class="skill-system-card" style="grid-template-columns: 200px 1fr;">
+              <div class="left" style="border-right-color: var(--sky); padding-right: 20px;">
+                <div class="system-name" style="color: var(--sky);">claude-api</div>
+                <div class="system-tag">Anthropic SDK domain</div>
+              </div>
+              <div style="font-size: 14px; color: var(--muted); line-height: 1.55;">
+                Model migration table · messages.parse() · zodOutputFormat() · adaptive thinking · prompt caching
+              </div>
+            </div>
+
+            <div class="skill-system-card" style="grid-template-columns: 200px 1fr;">
+              <div class="left" style="border-right-color: var(--rose); padding-right: 20px;">
+                <div class="system-name" style="color: var(--rose);">frontend-design</div>
+                <div class="system-tag">Production-grade UI</div>
+              </div>
+              <div style="font-size: 14px; color: var(--muted); line-height: 1.55;">
+                Distinctive design systems · avoiding generic AI aesthetics · token-first design · accessible primitives
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ SLIDE 7 — Superpowers ============ -->
+      <section class="slide">
+        <div class="inner">
+          <div class="slide-eyebrow">Skill layer 1 · Superpowers</div>
+          <h2 class="slide-title">The protocols that made parallelism safe.</h2>
+          <p class="slide-subtitle">
+            Process-level skills — they encode <em>how to think</em> about
+            planning, execution, verification, and parallel work. Reached for
+            before any code is written.
+          </p>
+
+          <div class="card" style="padding: 6px 22px;">
+            <div class="skill-line">
+              <div><span class="skill-name" style="color: var(--violet);">superpowers:writing-plans</span></div>
+              <div class="desc">
+                <strong>Translated each phase spec into an actionable plan</strong> before any code. The 0X-PLAN.md files in <code>.planning/phases/</code> are the artifact — frontmatter declares <code>files_modified</code>, <code>must_haves.truths</code>, and acceptance criteria.
+              </div>
+            </div>
+            <div class="skill-line">
+              <div><span class="skill-name" style="color: var(--violet);">superpowers:executing-plans</span></div>
+              <div class="desc">
+                <strong>Ran plans phase by phase</strong> with atomic commits. Acceptance criteria explicitly checked before each phase closes — no "I think it works."
+              </div>
+            </div>
+            <div class="skill-line">
+              <div><span class="skill-name" style="color: var(--violet);">superpowers:subagent-driven-development</span></div>
+              <div class="desc">
+                <strong>Decomposed phase work into sub-agent tasks</strong> with strict file ownership. Each sub-agent prompt declares its file scope so parallel writes never collide.
+              </div>
+            </div>
+            <div class="skill-line">
+              <div><span class="skill-name" style="color: var(--violet);">superpowers:dispatching-parallel-agents</span></div>
+              <div class="desc">
+                <strong>5 concurrent agents per parallel wave.</strong> Phase 2's 6-adapter wave finished in one round-trip instead of six sequential ones.
+              </div>
+            </div>
+            <div class="skill-line">
+              <div><span class="skill-name" style="color: var(--violet);">superpowers:test-driven-development</span></div>
+              <div class="desc">
+                <strong>44 unit + integration tests.</strong> Phase 2 wrote 22 tests alongside the adapters; Phase 7 added 8 validator regression tests for the AAPL + NVDA cases.
+              </div>
+            </div>
+            <div class="skill-line">
+              <div><span class="skill-name" style="color: var(--violet);">superpowers:verification-before-completion</span></div>
+              <div class="desc">
+                <strong>The wiring gate.</strong> Every wave ends with <code>tsc + lint + vitest + build</code> in the main thread before commit. Catches anything the parallel agents couldn't see from inside their file slice.
+              </div>
+            </div>
+            <div class="skill-line">
+              <div><span class="skill-name" style="color: var(--violet);">superpowers:requesting-code-review</span></div>
+              <div class="desc">
+                <strong>Peer-review loop on every PR.</strong> Catches subtle issues like the Pino worker-exit during HMR (Phase 3) that a single-agent flow would have missed.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ SLIDE 8 — GSD ============ -->
+      <section class="slide">
+        <div class="inner">
+          <div class="slide-eyebrow">Skill layer 2 · GSD</div>
+          <h2 class="slide-title">The project lifecycle scaffold.</h2>
+          <p class="slide-subtitle">
+            Project-management skills that produce real artifacts —
+            <code>PROJECT.md</code>, <code>ROADMAP.md</code>,
+            <code>STATE.md</code>, <code>0X-PLAN.md</code>,
+            <code>0X-SUMMARY.md</code>, <code>0X-VERIFICATION.md</code> — that
+            documented every phase before, during, and after.
+          </p>
+
+          <div class="row cols-2" style="gap: 14px;">
+            <div class="card" style="padding: 4px 20px;">
+              <div class="skill-line">
+                <div><span class="skill-name" style="color: var(--amber);">gsd-new-project</span></div>
+                <div class="desc">
+                  Bootstrapped <code>.planning/</code> with deep research → produced <code>research/STACK.md</code>, <code>FEATURES.md</code>, <code>PITFALLS.md</code>, <code>ARCHITECTURE.md</code>.
+                </div>
+              </div>
+              <div class="skill-line">
+                <div><span class="skill-name" style="color: var(--amber);">gsd-plan-phase</span></div>
+                <div class="desc">
+                  Generated <code>0X-PLAN.md</code> for each phase with files_modified, acceptance criteria, threat model.
+                </div>
+              </div>
+              <div class="skill-line">
+                <div><span class="skill-name" style="color: var(--amber);">gsd-execute-phase</span></div>
+                <div class="desc">
+                  Ran the plan, atomic commits per wave. 9 feat commits across 8 phases.
+                </div>
+              </div>
+              <div class="skill-line">
+                <div><span class="skill-name" style="color: var(--amber);">gsd-verify-work</span></div>
+                <div class="desc">
+                  Validated each phase's success criteria — produced <code>0X-VERIFICATION.md</code>.
+                </div>
+              </div>
+            </div>
+
+            <div class="card" style="padding: 4px 20px;">
+              <div class="skill-line">
+                <div><span class="skill-name" style="color: var(--amber);">gsd-secure-phase</span></div>
+                <div class="desc">
+                  <strong>Phase 2's STRIDE threat model.</strong> Anti-enumeration, ticker regex, Zod-at-boundary all came from this skill.
+                </div>
+              </div>
+              <div class="skill-line">
+                <div><span class="skill-name" style="color: var(--amber);">gsd-ai-integration-phase</span></div>
+                <div class="desc">
+                  Produced Phase 5's AI-SPEC.md — model choice, prompt structure, validator design, failure modes.
+                </div>
+              </div>
+              <div class="skill-line">
+                <div><span class="skill-name" style="color: var(--amber);">gsd-ui-phase</span></div>
+                <div class="desc">
+                  Generated UI-SPEC for Phases 3-4 — dark financial theme, color tokens, lazy-mount conventions.
+                </div>
+              </div>
+              <div class="skill-line">
+                <div><span class="skill-name" style="color: var(--amber);">gsd-ship</span></div>
+                <div class="desc">
+                  Atomic commit hygiene + conventional-commit messages that tell the project story.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <p class="footnote">
+            33 phase artifacts under <code>.planning/</code> · the documentation IS a deliverable
+          </p>
+        </div>
+      </section>
+
+      <!-- ============ SLIDE 9 — claude-mem ============ -->
+      <section class="slide">
+        <div class="inner">
+          <div class="slide-eyebrow">Skill layer 3 · claude-mem</div>
+          <h2 class="slide-title">Cross-session memory so the project survives every <code>/clear</code>.</h2>
+          <p class="slide-subtitle">
+            A multi-day project across multiple machines — without persistent
+            memory, Claude forgets every architectural decision the moment a
+            session ends.
+          </p>
+
+          <div class="row cols-2" style="gap: 18px;">
+            <div>
+              <div class="card" style="padding: 4px 20px;">
+                <div class="skill-line">
+                  <div><span class="skill-name" style="color: var(--emerald);">claude-mem:learn-codebase</span></div>
+                  <div class="desc">
+                    <strong>Primed the entire codebase into memory</strong> at session start. Eliminates the "what's in this repo" tax.
+                  </div>
+                </div>
+                <div class="skill-line">
+                  <div><span class="skill-name" style="color: var(--emerald);">claude-mem:pathfinder</span></div>
+                  <div class="desc">
+                    Mapped the codebase into <strong>feature groups</strong> (auth · finance · portfolio · ai · cron) so navigation stayed structural, not file-list-grep.
+                  </div>
+                </div>
+                <div class="skill-line">
+                  <div><span class="skill-name" style="color: var(--emerald);">claude-mem:mem-search</span></div>
+                  <div class="desc">
+                    Searched persistent memory at the start of <strong>every new session</strong> — "what did we decide about Decimal handling?" returns the actual decision, not a guess.
+                  </div>
+                </div>
+                <div class="skill-line">
+                  <div><span class="skill-name" style="color: var(--emerald);">claude-mem:make-plan</span></div>
+                  <div class="desc">
+                    Detailed phased plans informed by memory of past decisions — avoids re-litigating settled tradeoffs.
+                  </div>
+                </div>
+                <div class="skill-line">
+                  <div><span class="skill-name" style="color: var(--emerald);">claude-mem:timeline-report</span></div>
+                  <div class="desc">
+                    Generated journey reports — what shipped when, what blocked it, what got deferred.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div class="highlight-box">
+                <div class="label">Why this mattered</div>
+                <p style="font-size: 14px; color: var(--muted); line-height: 1.55;">
+                  Without claude-mem, the AAPL <code>16.6%</code> validator regression and the NVDA <code>36.6%</code> derivation case would have been independent discoveries — solved twice, possibly differently. With memory, the second one resolved in <strong style="color: var(--fg);">one</strong> validator extension instead of two.
+                </p>
+              </div>
+
+              <div class="card" style="margin-top: 14px;">
+                <div class="label">Cross-session continuity in practice</div>
+                <ul class="bullets" style="margin-top: 8px; font-size: 13px;">
+                  <li><span>Phase 5 referenced Phase 2's caching strategy without re-reading the code</span></li>
+                  <li><span>Phase 7 docs cited tradeoffs locked in Phase 3</span></li>
+                  <li><span>Validator improvements compounded across phases</span></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ SLIDE 10 — claude-api ============ -->
+      <section class="slide">
+        <div class="inner">
+          <div class="slide-eyebrow">Skill layer 4 · claude-api</div>
+          <h2 class="slide-title">The Anthropic SDK domain expert.</h2>
+          <p class="slide-subtitle">
+            Reached for whenever the work touched the Anthropic SDK directly —
+            most heavily in Phase 5 (AI pipeline). Returns
+            <em>current</em> patterns, not training-cutoff guesses.
+          </p>
+
+          <div class="row cols-2" style="gap: 18px;">
+            <div>
+              <div class="card">
+                <div class="label">What it surfaced for Phase 5</div>
+                <ul class="bullets" style="margin-top: 10px; font-size: 14px;">
+                  <li><span><strong>Model migration table</strong><span class="note">Mapped retired <code>claude-3-5-haiku</code> → <code>claude-haiku-4-5</code> and <code>claude-3-7-sonnet</code> → <code>claude-sonnet-4-6</code>.</span></span></li>
+                  <li><span><strong><code>messages.parse()</code> + <code>zodOutputFormat()</code></strong><span class="note">The structured-output pattern that replaced the original "ask the model to return JSON" prompt engineering.</span></span></li>
+                  <li><span><strong>Adaptive thinking</strong><span class="note">No more <code>budget_tokens</code> tuning — model decides depth per request. Effort control via <code>output_config.effort</code>.</span></span></li>
+                  <li><span><strong>Prompt caching mechanics</strong><span class="note">Sonnet 4.6's 2048-token cache floor → why <code>SYSTEM_PROMPT</code> is intentionally verbose.</span></span></li>
+                  <li><span><strong>Per-language SDK patterns</strong><span class="note">TypeScript SDK requires Zod v4 via the <code>zod/v4</code> subpath — saved hours of "why does <code>zodOutputFormat</code> reject my schema."</span></span></li>
+                </ul>
+              </div>
+            </div>
+
+            <div>
+              <pre style="font-size: 12px;"><span class="c">// what the skill produced — the exact pipeline</span>
+<span class="k">await</span> anthropic.messages.<span class="f">parse</span>({
+  model: <span class="s">'claude-sonnet-4-6'</span>,
+  max_tokens: <span class="n">4096</span>,
+  system: [{
+    type: <span class="s">'text'</span>,
+    text: SYSTEM_PROMPT,
+    cache_control: { type: <span class="s">'ephemeral'</span> }
+  }],
+  messages: builder(sources),
+  thinking: { type: <span class="s">'adaptive'</span> },
+  output_config: {
+    effort: <span class="s">'high'</span>,
+    format: <span class="f">zodOutputFormat</span>(schema),
+  },
+});</pre>
+
+              <div class="highlight-box" style="margin-top: 14px;">
+                <div class="label">The judgment</div>
+                <p class="quote">
+                  Sonnet 4.6 for <strong style="color: var(--fg);">on-demand quality</strong>. Haiku 4.5 for <strong style="color: var(--fg);">nightly scheduled runs</strong>. Same pipeline, one <code>model</code> parameter, same validator. <span style="color: var(--muted);">Cost optimization without code duplication.</span>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ SLIDE 11 — frontend-design ============ -->
+      <section class="slide">
+        <div class="inner">
+          <div class="slide-eyebrow">Skill layer 5 · frontend-design</div>
+          <h2 class="slide-title">Distinctive UI without falling into AI defaults.</h2>
+          <p class="slide-subtitle">
+            Modern AI models default to cream backgrounds, Inter font, generic
+            purple gradients. <code>frontend-design</code> is the antidote —
+            it produces context-specific design with character.
+          </p>
+
+          <div class="row cols-2" style="gap: 18px;">
+            <div>
+              <div class="card">
+                <div class="label">What this skill enforced</div>
+                <ul class="bullets" style="margin-top: 10px; font-size: 14px;">
+                  <li><span><strong>Token-first design</strong><span class="note">Tailwind v4 CSS variables for every color. No magic hex anywhere in components.</span></span></li>
+                  <li><span><strong>Semantic color coding</strong><span class="note">Emerald = positive, rose = negative, amber = warning, sky = informational, violet = AI. Used consistently across all 10 sections.</span></span></li>
+                  <li><span><strong>Cohesive component grammar</strong><span class="note"><code>Card</code> with <code>accent-left</code>, <code>pill</code> with intent tones, <code>SectionWrapper</code> with error boundary. Same primitives compose every section.</span></span></li>
+                  <li><span><strong>Anti-slop checklist</strong><span class="note">No purple gradients, no Inter-on-white, no generic emoji decoration. Dark financial theme is the brief, not a default.</span></span></li>
+                </ul>
+              </div>
+            </div>
+
+            <div>
+              <div class="mock" style="background: #0d0d0d;">
+                <h3>
+                  Catalysts &amp; Risks · MSFT
+                  <span class="right"><span class="pill amber">Stale · 14h</span></span>
+                </h3>
+                <div class="row cols-2" style="gap: 10px;">
+                  <div class="mock accent-left emerald" style="padding: 10px 12px; background: var(--card-elev);">
+                    <div style="font-size: 10px; font-weight: 700; letter-spacing: 0.14em; color: var(--emerald); margin-bottom: 6px;">CATALYSTS</div>
+                    <ul class="bull-list">
+                      <li>Azure +27% guidance raise</li>
+                      <li>Copilot Pro hits 5M seats</li>
+                      <li>Activision synergies Q3</li>
+                    </ul>
+                  </div>
+                  <div class="mock accent-left amber" style="padding: 10px 12px; background: var(--card-elev);">
+                    <div style="font-size: 10px; font-weight: 700; letter-spacing: 0.14em; color: var(--amber); margin-bottom: 6px;">RISKS</div>
+                    <ul class="bull-list">
+                      <li>Capex growth outpacing rev</li>
+                      <li>FTC scrutiny on bundling</li>
+                      <li>Cloud share concentration</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <p class="footnote">
+                Same primitives that built this deck — every slide here uses the app's tokens.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ SLIDE 12 — Wave execution + Sub-agents ============ -->
+      <section class="slide">
+        <div class="inner">
+          <div class="slide-eyebrow">How the skills compose · execution pattern</div>
+          <h2 class="slide-title">Wave-based execution with strict file ownership.</h2>
+          <p class="slide-subtitle">
+            All five skill systems converge on this one pattern. It's how
+            Phase 2 shipped 6 financial adapters in one afternoon — 5 of them
+            in parallel.
+          </p>
+
+          <div class="diagram" style="padding: 28px;">
+            <div style="display: grid; grid-template-columns: 0.8fr 1.6fr 0.8fr 1.2fr 1fr; gap: 14px; align-items: center;">
+              <div class="box lead" style="text-align: center;">
+                Wave A<br/><span style="color: var(--muted); font-size: 11px;">Foundation</span>
+              </div>
+              <div style="display: flex; gap: 6px; flex-direction: column;">
+                <div class="box" style="text-align: center; background: var(--card); border-color: var(--violet); color: var(--violet); font-size: 11px;">Wave B · Parallel</div>
+                <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px;">
+                  <div class="box" style="text-align: center; padding: 6px; font-size: 10px;">agent</div>
+                  <div class="box" style="text-align: center; padding: 6px; font-size: 10px;">agent</div>
+                  <div class="box" style="text-align: center; padding: 6px; font-size: 10px;">agent</div>
+                  <div class="box" style="text-align: center; padding: 6px; font-size: 10px;">agent</div>
+                  <div class="box" style="text-align: center; padding: 6px; font-size: 10px;">agent</div>
+                </div>
+                <div style="text-align: center; font-size: 10px; color: var(--muted); margin-top: 2px;">strict file ownership</div>
+              </div>
+              <div class="box" style="text-align: center; background: var(--amber-tint); border-color: var(--amber); color: var(--amber); font-size: 11px;">
+                Wiring gate<br/><span style="font-size: 10px;">tsc · lint · tests · build</span>
+              </div>
+              <div class="box" style="text-align: center; font-size: 11px;">
+                Wave C · Integration<br/><span style="color: var(--muted); font-size: 10px;">composes parallel outputs</span>
+              </div>
+              <div class="box lead" style="text-align: center; background: var(--emerald-tint); border-color: var(--emerald); color: var(--emerald); font-size: 11px;">
+                Phase verify<br/><span style="font-size: 10px;">human + commit</span>
+              </div>
+            </div>
+
+            <div style="margin-top: 22px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; font-size: 11px;">
+              <div style="text-align: center; color: var(--violet);"><code>writing-plans</code> sets contracts</div>
+              <div style="text-align: center; color: var(--violet);"><code>dispatching-parallel-agents</code> spawns 5</div>
+              <div style="text-align: center; color: var(--violet);"><code>verification-before-completion</code> gates</div>
+              <div style="text-align: center; color: var(--amber);"><code>gsd-verify-work</code> + <code>gsd-ship</code> close</div>
+            </div>
+          </div>
+
+          <div class="row cols-3" style="margin-top: 16px;">
+            <div class="card">
+              <div class="label">Phase 2 — Data Layer</div>
+              <p style="font-size: 12px; color: var(--muted); margin-top: 4px;">
+                <strong style="color: var(--fg);">1 + 5 + 3 = 9 agents</strong> shipped 6 adapters, 9 modules, 34 tests.
+              </p>
+            </div>
+            <div class="card">
+              <div class="label">Phase 6 — Alerts + Settings</div>
+              <p style="font-size: 12px; color: var(--muted); margin-top: 4px;">
+                <strong style="color: var(--fg);">1 + 4 + 1 + 1 = 7 agents</strong> for 4 features, 4 Prisma models, 3 cron jobs.
+              </p>
+            </div>
+            <div class="card">
+              <div class="label">Phase 7 — Polish</div>
+              <p style="font-size: 12px; color: var(--muted); margin-top: 4px;">
+                <strong style="color: var(--fg);">1 + 3 = 4 agents</strong> for OTel, freshness UI, validator tests, doc rewrite.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ SLIDE 13 — MCPs + Custom skills + judgment ============ -->
+      <section class="slide">
+        <div class="inner">
+          <div class="slide-eyebrow">Round out the kit · MCPs · custom skills</div>
+          <h2 class="slide-title">Knowing what <em>not</em> to use is also engineering.</h2>
+          <p class="slide-subtitle">
+            The skill registry is a tool inventory. Discipline is reaching for
+            the right one — and refusing the ones that don't fit, no matter
+            how trendy.
+          </p>
+
+          <div class="row cols-2" style="gap: 16px;">
+            <div>
+              <div class="card accent-left sky">
+                <div class="label" style="color: var(--sky);">Used selectively</div>
+                <div class="skill-line" style="grid-template-columns: 180px 1fr;">
+                  <div><span class="skill-name" style="color: var(--sky);">context-mode:ctx-stats</span></div>
+                  <div class="desc">Token-window savings telemetry — checked at phase boundaries.</div>
+                </div>
+                <div class="skill-line" style="grid-template-columns: 180px 1fr;">
+                  <div><span class="skill-name" style="color: var(--sky);">simplify</span></div>
+                  <div class="desc">Reviewed changed code for reuse + efficiency before commit.</div>
+                </div>
+                <div class="skill-line" style="grid-template-columns: 180px 1fr;">
+                  <div><span class="skill-name" style="color: var(--sky);">find-skills</span></div>
+                  <div class="desc">Discovered new skills when the gap was real, not on a hunch.</div>
+                </div>
+                <div class="skill-line" style="grid-template-columns: 180px 1fr;">
+                  <div><span class="skill-name" style="color: var(--sky);">skill-creator</span></div>
+                  <div class="desc">For project-specific patterns the registry didn't cover.</div>
+                </div>
+              </div>
+
+              <div class="card accent-left amber" style="margin-top: 14px;">
+                <div class="label" style="color: var(--amber);">Built-in tools (Claude Code)</div>
+                <ul class="bullets" style="margin-top: 8px; font-size: 13px;">
+                  <li><span><code>TodoWrite</code> — phase + wave task tracking</span></li>
+                  <li><span><code>Bash run_in_background</code> + <code>Monitor</code> — long-running tasks (dev server, Docker)</span></li>
+                  <li><span><code>ToolSearch</code> — lazy tool loading; context stays for work, not catalogue</span></li>
+                </ul>
+              </div>
+            </div>
+
+            <div>
+              <div class="card accent-left rose">
+                <div class="label" style="color: var(--rose);">MCPs — available, deliberately not used</div>
+                <p style="font-size: 13px; color: var(--muted); margin-top: 6px;">
+                  Figma · Gmail · Google Drive · Google Calendar — all
+                  authenticated and available. None used.
+                </p>
+                <ul class="bullets muted" style="margin-top: 10px; font-size: 13px;">
+                  <li><span>No design handoff (Tailwind tokens drive the UI directly)</span></li>
+                  <li><span>No email integration in dev (Pino-to-console covers it)</span></li>
+                  <li><span>No external doc storage (<code>.planning/</code> + <code>docs/</code> in repo)</span></li>
+                  <li><span>No calendar coupling (cron jobs run in-process)</span></li>
+                </ul>
+                <p class="footnote" style="margin-top: 12px;">
+                  Adding MCP servers without need = context bloat + auth surface area for zero product value.
+                </p>
+              </div>
+
+              <div class="highlight-box" style="margin-top: 14px;">
+                <div class="label">The principle</div>
+                <p class="quote">
+                  <strong style="color: var(--fg);">Every skill / tool / MCP in this project has a named justification.</strong> If I can't say "I used X for Y," it's not in the stack. That's the difference between an AI workflow and AI noise.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ SLIDE 14 — Open Q&A ============ -->
+      <section class="slide">
+        <div class="inner" style="text-align: center;">
+          <div class="slide-eyebrow">Open discussion</div>
+          <h2
+            class="slide-title"
+            style="font-size: 72px; margin-top: 8px; margin-bottom: 32px;"
+          >
+            Questions?
+          </h2>
+          <p
+            class="slide-subtitle"
+            style="margin: 0 auto 32px; max-width: 720px;"
+          >
+            Happy to dig deeper. A few directions if useful:
+          </p>
+
+          <div
+            class="row cols-2"
+            style="
+              gap: 14px;
+              max-width: 920px;
+              margin: 0 auto;
+              text-align: left;
+            "
+          >
+            <div class="card accent-left amber">
+              <div class="label">Engineering depth</div>
+              <ul class="bullets" style="margin-top: 8px; font-size: 13px;">
+                <li><span>The hallucination validator — derivation math, false-positive tuning</span></li>
+                <li><span>Adapter pattern + JSONB caching strategy</span></li>
+                <li><span>OpenTelemetry wiring decisions</span></li>
+              </ul>
+            </div>
+            <div class="card accent-left violet">
+              <div class="label">Working with AI</div>
+              <ul class="bullets" style="margin-top: 8px; font-size: 13px;">
+                <li><span>Why a layered skill stack beats one-big-prompt</span></li>
+                <li><span>How GSD + Superpowers compose in practice</span></li>
+                <li><span>claude-mem's role across multi-day projects</span></li>
+              </ul>
+            </div>
+            <div class="card accent-left emerald">
+              <div class="label">Product + scoping</div>
+              <ul class="bullets" style="margin-top: 8px; font-size: 13px;">
+                <li><span>Sonnet vs Haiku — choosing model per call site</span></li>
+                <li><span>Honest empty states vs faking data (Segments)</span></li>
+                <li><span>What I'd cut differently if I started over</span></li>
+              </ul>
+            </div>
+            <div class="card accent-left rose">
+              <div class="label">Production-readiness</div>
+              <ul class="bullets" style="margin-top: 8px; font-size: 13px;">
+                <li><span>What ships before AWS deploy (SES, OTLP, Lighthouse)</span></li>
+                <li><span>Security — anti-enumeration, httpOnly cookies, Decimal types</span></li>
+                <li><span>Cron scaling beyond one EC2 instance</span></li>
+              </ul>
+            </div>
+          </div>
+
+          <p class="footnote" style="margin-top: 24px;">
+            Live demo at <code>localhost:3000/dashboard/AAPL</code> · code at <code>git log</code> · docs in <code>docs/</code>
+          </p>
+        </div>
+      </section>
+
+      <!-- ============ SLIDE 15 — Thank you ============ -->
+      <section class="slide">
+        <div class="inner" style="text-align: center;">
+          <div class="slide-eyebrow">— end —</div>
+          <h1
+            class="deck-title"
+            style="font-size: 100px; margin-top: 16px; margin-bottom: 20px;"
+          >
+            Thank <span class="accent">you.</span>
+          </h1>
+          <p
+            class="tagline"
+            style="margin: 0 auto 36px; max-width: 640px; font-size: 20px;"
+          >
+            Excited to dig in further — on AurumIQ, or anything else you'd
+            like to talk through.
+          </p>
+
+          <div
+            class="stats"
+            style="max-width: 900px; margin: 0 auto;"
+          >
+            <div class="stat">
+              <div class="n">5</div>
+              <div class="t">Skill systems composed</div>
+            </div>
+            <div class="stat">
+              <div class="n">33</div>
+              <div class="t">Requirements shipped</div>
+            </div>
+            <div class="stat">
+              <div class="n">8</div>
+              <div class="t">Phases · all green</div>
+            </div>
+            <div class="stat">
+              <div class="n">v1.0</div>
+              <div class="t">Tagged + green</div>
+            </div>
+          </div>
+
+          <div
+            style="
+              margin-top: 40px;
+              font-family: var(--mono);
+              font-size: 12px;
+              color: var(--muted);
+              letter-spacing: 0.1em;
+            "
+          >
+            Ben Reich · benrben4@gmail.com
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      (function () {
+        const slides = document.querySelectorAll('.slide');
+        const total = slides.length;
+        let cur = 0;
+        const counter = document.getElementById('cur');
+        const tot = document.getElementById('tot');
+        const progress = document.getElementById('progress');
+        tot.textContent = total;
+
+        function show(i) {
+          cur = Math.max(0, Math.min(total - 1, i));
+          slides.forEach((s, idx) => s.classList.toggle('active', idx === cur));
+          counter.textContent = cur + 1;
+          progress.style.width = ((cur + 1) / total) * 100 + '%';
+          history.replaceState(null, '', '#' + (cur + 1));
+        }
+
+        function next() { show(cur + 1); }
+        function prev() { show(cur - 1); }
+
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+            e.preventDefault();
+            next();
+          } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+            e.preventDefault();
+            prev();
+          } else if (e.key === 'Home') {
+            show(0);
+          } else if (e.key === 'End') {
+            show(total - 1);
+          } else if (e.key === 'f' || e.key === 'F') {
+            if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+            else document.exitFullscreen();
+          } else if (/^[1-9]$/.test(e.key)) {
+            show(parseInt(e.key, 10) - 1);
+          }
+        });
+
+        document.addEventListener('click', (e) => {
+          if (e.target.closest('a, button, kbd')) return;
+          if (e.clientX > window.innerWidth / 2) next();
+          else prev();
+        });
+
+        const hash = parseInt(location.hash.slice(1), 10);
+        if (!isNaN(hash) && hash >= 1 && hash <= total) show(hash - 1);
+        else show(0);
+      })();
+    </script>
+  </body>
+</html>
