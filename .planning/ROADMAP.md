@@ -112,11 +112,12 @@ Plans:
 
 ---
 
-### Phase 6: Alerts, Scheduling & Settings
+### Phase 6: Alerts, Scheduling & Settings *(completed 2026-05-23)*
 
 **Goal:** Add price and earnings alerts, configurable scheduled AI generation, and a fully functional Settings page so users have both retention triggers and account control.
 **Mode:** mvp
 **Requirements:** ALRT-01, ALRT-02, SCHED-01, SCHED-02, SCHED-03, SET-01, SET-02, SET-03, SET-04
+**Execution:** Wave 6A foundation (4 Prisma models, cron registry, foundation libs) → Wave 6B-1 4 parallel feature agents (price alerts, earnings alerts, schedules, analysis history) → Wave 6B-2 Settings page agent (composes the 4 features + account API for password/email) → Wave 6C orchestrator wired the Settings nav link + AnalysisHistoryView into per-ticker dashboard. Cron jobs register on Node-runtime startup via `instrumentation.ts`. Haiku 4.5 used for cost-efficient scheduled runs; Sonnet 4.6 stays default for on-demand. User browser-verified end-to-end.
 **Success Criteria:**
 
 1. A user can create a price alert for a stock; when the price crosses the threshold, they receive an email notification.

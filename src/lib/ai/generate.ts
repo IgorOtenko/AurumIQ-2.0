@@ -37,13 +37,16 @@ interface GenerateParams {
   ticker: string;
   sectionType: SectionType;
   sources: SourcesData;
+  // Override the default model — scheduled cron runs pass Haiku for cost.
+  model?: string;
 }
 
 export async function generateSection(
   params: GenerateParams,
 ): Promise<Analysis> {
   const { userId, ticker, sectionType, sources } = params;
-  const log = aiLogger.child({ userId, ticker, sectionType, model: MODEL });
+  const model = params.model ?? MODEL;
+  const log = aiLogger.child({ userId, ticker, sectionType, model });
 
   // On validation_failed we leave `content` untouched on the existing row.
   // That keeps the previous validated section visible to the user instead
@@ -57,19 +60,19 @@ export async function generateSection(
       sectionType,
       status: 'generating',
       sources: sources as object,
-      model: MODEL,
+      model,
     },
     update: {
       status: 'generating',
       sources: sources as object,
-      model: MODEL,
+      model,
       errorMessage: null,
     },
   });
 
   try {
     const response = await anthropic.messages.parse({
-      model: MODEL,
+      model,
       max_tokens: 4096,
       system: [
         {
@@ -128,6 +131,21 @@ export async function generateSection(
         },
       });
     }
+
+    // Append a versioned snapshot before flipping the latest row to
+    // `completed`. AnalysisHistory is append-only and powers the
+    // "compare with last month" view; the latest row stays on Analysis
+    // so the read path remains a single-row lookup.
+    await db.analysisHistory.create({
+      data: {
+        userId,
+        ticker,
+        sectionType,
+        content: response.parsed_output as object,
+        sources: sources as object,
+        model,
+      },
+    });
 
     return db.analysis.update({
       where: { userId_ticker_sectionType: { userId, ticker, sectionType } },

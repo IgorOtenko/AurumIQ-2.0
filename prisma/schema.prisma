@@ -15,14 +15,18 @@ datasource db {
 /// Core user account for authentication and portfolio ownership.
 /// bcryptjs handles password hashing at the application layer.
 model User {
-  id             String     @id @default(uuid())
-  email          String     @unique
-  hashedPassword String
-  name           String?
-  createdAt      DateTime   @default(now())
-  updatedAt      DateTime   @updatedAt
-  holdings       Holding[]
-  analyses       Analysis[]
+  id              String            @id @default(uuid())
+  email           String            @unique
+  hashedPassword  String
+  name            String?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  holdings        Holding[]
+  analyses        Analysis[]
+  priceAlerts     PriceAlert[]
+  earningsAlerts  EarningsAlert[]
+  schedules       Schedule[]
+  analysisHistory AnalysisHistory[]
 
   @@map("users")
 }
@@ -105,4 +109,95 @@ model Analysis {
   @@unique([userId, ticker, sectionType])
   @@index([userId, ticker])
   @@map("analyses")
+}
+
+/// Price-cross alert. When the cached price moves past `threshold` in the
+/// `direction` set by the user, the cron check fires an email and marks
+/// the alert inactive (one-shot — users re-arm explicitly to avoid spam).
+model PriceAlert {
+  id          String    @id @default(uuid())
+  userId      String    @map("user_id")
+  ticker      String
+  direction   String
+  threshold   Decimal   @db.Decimal(20, 8)
+  triggeredAt DateTime? @map("triggered_at")
+  active      Boolean   @default(true)
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, active])
+  @@index([ticker, active])
+  @@map("price_alerts")
+}
+
+/// Earnings-date reminder. Fires once per upcoming earnings event, N
+/// days before. `lastNotifiedDate` stores the date-only stamp of the
+/// earnings event we already notified for, so a user who re-enters
+/// the same N-day window after a new earnings date can be notified
+/// again for the new event without double-firing the old one.
+model EarningsAlert {
+  id               String    @id @default(uuid())
+  userId           String    @map("user_id")
+  ticker           String
+  daysBefore       Int       @map("days_before")
+  lastNotifiedDate DateTime? @map("last_notified_date") @db.Date
+  active           Boolean   @default(true)
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, active])
+  @@index([ticker, active])
+  @@map("earnings_alerts")
+}
+
+/// Daily scheduled AI regeneration for a (userId, ticker, sectionType).
+/// `hour` + `minute` + `timezone` express the local-time slot the user
+/// wants. The cron tick converts that to UTC at evaluation time.
+/// `lastRunAt` is the wall-clock of the last fire (for diagnostics);
+/// `lastRunDate` is the date-stamp of the last successful daily run
+/// (gates re-firing if the cron tick runs twice the same day).
+model Schedule {
+  id          String    @id @default(uuid())
+  userId      String    @map("user_id")
+  ticker      String
+  sectionType String    @map("section_type")
+  hour        Int
+  minute      Int
+  timezone    String
+  active      Boolean   @default(true)
+  lastRunAt   DateTime? @map("last_run_at")
+  lastRunDate DateTime? @map("last_run_date") @db.Date
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, ticker, sectionType])
+  @@index([active])
+  @@map("schedules")
+}
+
+/// Append-only log of every completed AI analysis. Drives the
+/// AnalysisHistory view so users can compare today's Bull/Bear thesis
+/// against last month's. The latest row per (user, ticker, section)
+/// also lives on the `Analysis` table for read-path simplicity; this
+/// table is for browsing past versions only.
+model AnalysisHistory {
+  id          String   @id @default(uuid())
+  userId      String   @map("user_id")
+  ticker      String
+  sectionType String   @map("section_type")
+  content     Json
+  sources     Json
+  model       String
+  generatedAt DateTime @default(now()) @map("generated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, ticker, sectionType, generatedAt(sort: Desc)])
+  @@map("analysis_history")
 }

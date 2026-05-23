@@ -3,6 +3,7 @@ import LazySection from "@/components/dashboard/LazySection";
 import SectionSkeleton from "@/components/dashboard/SectionSkeleton";
 import SectionWrapper from "@/components/dashboard/SectionWrapper";
 import StockTickerBar from "@/components/portfolio/StockTickerBar";
+import AnalysisHistoryView from "@/components/sections/AnalysisHistoryView";
 import AnalystSetup from "@/components/sections/AnalystSetup";
 import BullBear from "@/components/sections/BullBear";
 import CatalystsRisks from "@/components/sections/CatalystsRisks";
@@ -54,12 +55,20 @@ export default async function TickerDashboardPage({
     <div className="min-h-screen bg-background text-foreground">
       <header className="border-b border-border">
         <div className="max-w-7xl mx-auto px-6 py-4">
-          <Link
-            href="/dashboard"
-            className="text-sm text-sky-400 hover:text-sky-300 underline underline-offset-2"
-          >
-            Back to Portfolio
-          </Link>
+          <div className="flex items-center justify-between">
+            <Link
+              href="/dashboard"
+              className="text-sm text-sky-400 hover:text-sky-300 underline underline-offset-2"
+            >
+              Back to Portfolio
+            </Link>
+            <Link
+              href="/settings"
+              className="text-sm text-sky-400 hover:text-sky-300 underline underline-offset-2"
+            >
+              Settings
+            </Link>
+          </div>
           <h1 className="text-2xl font-semibold mt-2">{symbol} — Analysis</h1>
         </div>
         <div className="max-w-7xl mx-auto px-6 pb-4">
@@ -107,6 +116,22 @@ export default async function TickerDashboardPage({
             <Sources ticker={symbol} />
           </LazySection>
         </div>
+
+        <section className="space-y-4 pt-4">
+          <h2 className="text-lg font-semibold">Analysis History</h2>
+          <p className="text-sm text-muted-foreground">
+            Past AI generations for this ticker, organized by section.
+          </p>
+          <LazySection title="Bull vs Bear History" className="lg:col-span-2">
+            <AnalysisHistoryView ticker={symbol} sectionType="bullBear" />
+          </LazySection>
+          <LazySection title="Catalysts &amp; Risks History" className="lg:col-span-2">
+            <AnalysisHistoryView ticker={symbol} sectionType="catalystsRisks" />
+          </LazySection>
+          <LazySection title="Live on the Call History" className="lg:col-span-2">
+            <AnalysisHistoryView ticker={symbol} sectionType="liveOnCall" />
+          </LazySection>
+        </section>
       </main>
     </div>
   );
