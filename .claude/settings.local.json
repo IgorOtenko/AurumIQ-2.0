@@ -8,7 +8,8 @@
       "Bash(node __TRACKED_VAR__/.claude/get-shit-done/bin/gsd-tools.cjs resolve-model researcher)",
       "Bash(node __TRACKED_VAR__/.claude/get-shit-done/bin/gsd-tools.cjs resolve-model synthesizer)",
       "Bash(node __TRACKED_VAR__/.claude/get-shit-done/bin/gsd-tools.cjs resolve-model roadmapper)",
-      "Bash(node __TRACKED_VAR__/.claude/get-shit-done/bin/gsd-tools.cjs commit 'docs: define v1 requirements' --files .planning/REQUIREMENTS.md)"
+      "Bash(node __TRACKED_VAR__/.claude/get-shit-done/bin/gsd-tools.cjs commit 'docs: define v1 requirements' --files .planning/REQUIREMENTS.md)",
+      "WebSearch"
     ]
   }
 }
