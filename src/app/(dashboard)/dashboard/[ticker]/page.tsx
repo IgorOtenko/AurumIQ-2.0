@@ -4,6 +4,9 @@ import SectionSkeleton from "@/components/dashboard/SectionSkeleton";
 import SectionWrapper from "@/components/dashboard/SectionWrapper";
 import StockTickerBar from "@/components/portfolio/StockTickerBar";
 import AnalystSetup from "@/components/sections/AnalystSetup";
+import BullBear from "@/components/sections/BullBear";
+import CatalystsRisks from "@/components/sections/CatalystsRisks";
+import LiveOnTheCall from "@/components/sections/LiveOnTheCall";
 import NumbersGoingIn from "@/components/sections/NumbersGoingIn";
 import QoQYoYTrend from "@/components/sections/QoQYoYTrend";
 import Sources from "@/components/sections/Sources";
@@ -11,14 +14,10 @@ import StockHeader from "@/components/sections/StockHeader";
 
 const TICKER_REGEX = /^[A-Z0-9.]{1,10}$/;
 
-// Sections not yet built — Phase 5 ships the 3 AI sections (Bull vs Bear,
-// Catalysts & Risks, Live on the Call) and Phase 8 ships Segments + Options.
+// Sections still pending — Phase 8 ships Segments + Options.
 const PENDING_SECTIONS = [
   "Segment Expectations",
   "Expected Move & Options",
-  "Bull vs Bear",
-  "Catalysts & Risks",
-  "Live on the Call",
 ] as const;
 
 export default async function TickerDashboardPage({
@@ -87,6 +86,18 @@ export default async function TickerDashboardPage({
               <SectionSkeleton title={title} />
             </SectionWrapper>
           ))}
+
+          <LazySection title="Bull vs Bear" className="lg:col-span-2">
+            <BullBear ticker={symbol} />
+          </LazySection>
+
+          <LazySection title="Catalysts & Risks" className="lg:col-span-2">
+            <CatalystsRisks ticker={symbol} />
+          </LazySection>
+
+          <LazySection title="Live on the Call" className="lg:col-span-2">
+            <LiveOnTheCall ticker={symbol} />
+          </LazySection>
 
           <LazySection title="Analyst Setup">
             <AnalystSetup ticker={symbol} />

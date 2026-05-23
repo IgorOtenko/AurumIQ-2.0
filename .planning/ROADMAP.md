@@ -96,11 +96,12 @@ Plans:
 
 ---
 
-### Phase 5: AI Pipeline & Core Analysis Sections
+### Phase 5: AI Pipeline & Core Analysis Sections *(completed 2026-05-23)*
 
 **Goal:** Implement the Skill/Plugin AI pipeline with hallucination mitigations and deliver the three core AI analysis sections plus on-demand refresh.
 **Mode:** mvp
 **Requirements:** AI-01, AI-02, AI-03, AI-04, INFRA-04
+**Execution:** Wave 5A foundation (Analysis Prisma model, Anthropic SDK setup, prompts, validation, SSE endpoint) → Wave 5B 3 parallel section components (BullBear, CatalystsRisks, LiveOnTheCall) → Wave 5C orchestrator wired sections into `/dashboard/[ticker]` → user browser-verified with real Claude generations on AAPL and NVDA. Two follow-ups during verification: switched to `messages.parse()` + `zodOutputFormat()` for guaranteed JSON; extended validator with unit-aware (decimal↔percent, compact scaling) and derivation-aware (pairwise sum/diff/ratio/% change) matching.
 **Success Criteria:**
 
 1. Clicking "Refresh Analysis" triggers async AI generation; an SSE progress indicator updates in real time and the section re-renders with new content on completion — the UI never blocks.

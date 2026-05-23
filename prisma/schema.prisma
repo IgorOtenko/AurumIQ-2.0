@@ -15,13 +15,14 @@ datasource db {
 /// Core user account for authentication and portfolio ownership.
 /// bcryptjs handles password hashing at the application layer.
 model User {
-  id             String    @id @default(uuid())
-  email          String    @unique
+  id             String     @id @default(uuid())
+  email          String     @unique
   hashedPassword String
   name           String?
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
   holdings       Holding[]
+  analyses       Analysis[]
 
   @@map("users")
 }
@@ -77,4 +78,31 @@ model RawData {
   @@unique([ticker, dataType])
   @@index([ticker, dataType, fetchedAt])
   @@map("raw_data")
+}
+
+/// AI-generated analysis section for a (user, ticker, sectionType).
+/// One latest row per tuple — the `@@unique([userId, ticker, sectionType])`
+/// constraint enables upsert-on-refresh while older versions live in
+/// AnalysisHistory (Phase 6).
+/// `sources` snapshots the data passed to the prompt for traceability and
+/// post-generation hallucination validation; `content` is the structured
+/// JSON output the section component renders.
+model Analysis {
+  id          String         @id @default(uuid())
+  userId      String
+  ticker      String
+  sectionType String         @map("section_type")
+  status      String
+  content     Json?
+  sources     Json
+  model       String
+  errorMessage String?       @map("error_message")
+  generatedAt DateTime       @default(now()) @map("generated_at")
+  updatedAt   DateTime       @updatedAt
+
+  user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, ticker, sectionType])
+  @@index([userId, ticker])
+  @@map("analyses")
 }

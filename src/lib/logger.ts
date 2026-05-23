@@ -35,3 +35,5 @@ if (!isProd) {
 }
 
 export const financeLogger: Logger = logger.child({ module: 'finance' });
+
+export const aiLogger: Logger = logger.child({ module: 'ai' });
