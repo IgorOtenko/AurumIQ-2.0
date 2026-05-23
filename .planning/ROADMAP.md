@@ -49,11 +49,11 @@ Plans:
 Plans:
 **Wave 1**
 
-- [ ] 02-01-PLAN.md — End-to-end vertical slice: Prisma RawData model, Pino logger, yahoo-finance2 client, JSONB cache, price adapter, API route, tests
+- [x] 02-01-PLAN.md — End-to-end vertical slice: Prisma RawData model, Pino logger, yahoo-finance2 client, JSONB cache, price adapter, API route, tests *(completed 2026-05-23)*
 
-**Wave 2** *(blocked on Wave 1 completion)*
+**Wave 2** *(parallelized: 5 adapter agents + orchestrator wiring + 3 test agents)*
 
-- [ ] 02-02-PLAN.md — Remaining 5 adapters (earnings, analyst, options, profile, news), full API route wiring, comprehensive test suite (22+ tests)
+- [x] 02-02-PLAN.md — Remaining 5 adapters (earnings, analyst, options, profile, news), full API route wiring, comprehensive test suite (34 tests across 5 files) *(completed 2026-05-23)*
 
 **Success Criteria:**
 
